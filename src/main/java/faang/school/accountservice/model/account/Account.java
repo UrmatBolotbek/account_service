@@ -38,7 +38,7 @@ public class Account {
     private OwnerType ownerType;
 
     @Column(name = "owner_id", nullable = false)
-    private long owner_id;
+    private long ownerId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "account_type", nullable = false)
