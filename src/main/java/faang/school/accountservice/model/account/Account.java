@@ -1,5 +1,9 @@
 package faang.school.accountservice.model.account;
 
+import faang.school.accountservice.enums.AccountStatus;
+import faang.school.accountservice.enums.AccountType;
+import faang.school.accountservice.enums.Currency;
+import faang.school.accountservice.enums.OwnerType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +19,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.Version;
 
 import java.time.LocalDateTime;
 
@@ -46,7 +51,7 @@ public class Account {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "currency", nullable = false, length = 3)
-    private Currency currency;
+    private Currency.Currency currency;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -66,7 +71,8 @@ public class Account {
     @Column(name = "close_at")
     private LocalDateTime closedAt;
 
+    @Version
     @Column(name = "version", nullable = false)
-    private long version;
+    private int version;
 
 }

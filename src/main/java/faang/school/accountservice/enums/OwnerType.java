@@ -1,7 +1,7 @@
 package faang.school.accountservice.enums;
 
-public enum Currency {
+public enum OwnerType {
 
-    RUB, EUR, USD
+    USER, PROJECT
+
 }
-
