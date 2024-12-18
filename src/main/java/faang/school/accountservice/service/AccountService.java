@@ -38,14 +38,14 @@ public class AccountService {
     @Transactional(readOnly = true)
     public ResponseAccountDto getAccountWithId(long accountId, long userId) {
         Account account = validator.validateAccount(accountId);
-        log.info(" Getting an account with id {} user with id {}", accountId, userId);
+        log.info("Getting an account with id {} user with id {}", accountId, userId);
         return accountMapper.toResponseAccountDto(account);
     }
 
     @Transactional(readOnly = true)
     public ResponseAccountDto getAccountWithNumber(String accountNumber, long userId) {
         Account account = validator.validateAccount(accountNumber);
-        log.info(" Getting an account with id {} user with id {}", accountId, userId);
+        log.info("Getting an account with id {} user with id {}", account.getId(), userId);
         return accountMapper.toResponseAccountDto(account);
     }
 
@@ -53,8 +53,7 @@ public class AccountService {
     public ResponseAccountDto blockAccount(long accountId, long userId) {
         Account account = validator.validateAccount(accountId);
         validator.checkAccountToUser(account, userId);
-        validator.checkStatusCLOSEAccount(account);
-        validator.checkStatusFREEZEAccount(account);
+        validator.checkStatusOpenAccount(account);
         account.setStatus(AccountStatus.FREEZE);
         account.setVersion(account.getVersion() + 1);
         accountRepository.save(account);
@@ -64,7 +63,8 @@ public class AccountService {
     @Transactional
     public ResponseAccountDto unblockAccount(long accountId, long userId) {
         Account account = validator.validateAccount(accountId);
-        validator.checkStatusAccount(account);
+        validator.checkAccountToUser(account, userId);
+        validator.checkStatusFreezeAccount(account);
         account.setStatus(AccountStatus.OPEN);
         account.setVersion(account.getVersion() + 1);
         accountRepository.save(account);
@@ -74,8 +74,9 @@ public class AccountService {
 
     @Transactional
     public ResponseAccountDto closeAccount(long accountId, long userId) {
-        Account account = validator.checkAccount(accountId, userId);
-        validator.checkStatusAccount(account);
+        Account account = validator.validateAccount(accountId);
+        validator.checkAccountToUser(account, userId);
+        validator.checkStatusCloseAccount(account);
         account.setStatus(AccountStatus.CLOSE);
         account.setVersion(account.getVersion() + 1);
         accountRepository.save(account);

@@ -27,9 +27,14 @@ public class AccountController {
         return accountService.createAccount(requestAccountDto, userContext.getUserId());
     }
 
-    @GetMapping("/{accountId}")
-    public ResponseAccountDto getAccount(@PathVariable long accountId) {
-        return accountService.getAccount(accountId, userContext.getUserId());
+    @GetMapping("/id/{accountId}")
+    public ResponseAccountDto getAccountWithId(@PathVariable long accountId) {
+        return accountService.getAccountWithId(accountId, userContext.getUserId());
+    }
+
+    @GetMapping("/number/{number}")
+    public ResponseAccountDto getAccountWithNumber(@PathVariable String number) {
+        return accountService.getAccountWithNumber(number, userContext.getUserId());
     }
 
     @PutMapping("/{accountId}/block")

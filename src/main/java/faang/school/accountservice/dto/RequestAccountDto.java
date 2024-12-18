@@ -6,15 +6,19 @@ import faang.school.accountservice.enums.OwnerType;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class RequestAccountDto {
 
-    @Max(20)
-    @Min(16)
+    @Size(min = 16, max = 20)
     @NotNull(message = "Number cannot be null")
     private String number;
     @NotNull(message = "OwnerType cannot be null")
@@ -22,6 +26,6 @@ public class RequestAccountDto {
     @NotNull(message = "AccountType cannot be null")
     private AccountType accountType;
     @NotNull(message = "Currency cannot be null")
-    private Currency.Currency currency;
+    private Currency currency;
 
 }
