@@ -35,8 +35,6 @@ public class Account {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private long id;
 
-    //TODO Можно добавить валидацию длины и формата номера через @Size или custom validator
-    // @Size(min = 12, max = 20)
     @Column(name = "number", nullable = false, unique = true, length = 20)
     private String number;
 
@@ -69,12 +67,9 @@ public class Account {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // @Temporal(TemporalType.TIMESTAMP) TODO можно убрать Аннотация @Temporal не обязательна для LocalDateTime.
-    //  Она в основном применяется для типов java.util.Date. Это не критично, но можно упростить, убрав @Temporal.
     @Column(name = "close_at")
     private LocalDateTime closedAt;
 
-    //добавил эту аннотацию для оптимистичной блокировки
     @Version
     @Column(name = "version", nullable = false)
     private long version;

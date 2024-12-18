@@ -6,6 +6,9 @@ ALTER TABLE account
     FOREIGN KEY (balance_id)
     REFERENCES balance (id);
 
+ALTER TABLE account
+    ALTER COLUMN version TYPE BIGINT;
+
 DROP INDEX IF EXISTS idx_number;
 
 CREATE INDEX idx_owner_id ON account(owner_id);

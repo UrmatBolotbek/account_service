@@ -31,10 +31,12 @@ public class Balance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "authorization_balance", nullable = false, precision = 18, scale = 2)
+    @Builder.Default
+    @Column(name = "auth_balance", nullable = false, precision = 18, scale = 2)
     private BigDecimal authorizationBalance = BigDecimal.ZERO;
 
-    @Column(name = "actual_balance", nullable = false, precision = 18, scale = 2)
+    @Builder.Default
+    @Column(name = "current_balance", nullable = false, precision = 18, scale = 2)
     private BigDecimal actualBalance = BigDecimal.ZERO;
 
     @CreationTimestamp
@@ -46,8 +48,8 @@ public class Balance {
     private LocalDateTime updatedAt;
 
     @Version
-    @Column(name = "version", nullable = false)
-    private int version;
+    @Column(name = "version")
+    private long version;
 
     @OneToOne(mappedBy = "balance")
     private Account account;
