@@ -17,7 +17,7 @@ public class ResponseAccountDto {
     private OwnerType ownerType;
     private long ownerId;
     private AccountType accountType;
-    private Currency.Currency currency;
+    private Currency currency;
     private AccountStatus status;
     private LocalDateTime updatedAt;
 

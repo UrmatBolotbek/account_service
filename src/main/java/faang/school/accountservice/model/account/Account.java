@@ -51,7 +51,7 @@ public class Account {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "currency", nullable = false, length = 3)
-    private Currency.Currency currency;
+    private Currency currency;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

@@ -36,16 +36,25 @@ public class AccountService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseAccountDto getAccount(long accountId, long userId) {
-        Account account = validator.checkAccount(accountId, userId);
+    public ResponseAccountDto getAccountWithId(long accountId, long userId) {
+        Account account = validator.validateAccount(accountId);
+        log.info(" Getting an account with id {} user with id {}", accountId, userId);
+        return accountMapper.toResponseAccountDto(account);
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseAccountDto getAccountWithNumber(String accountNumber, long userId) {
+        Account account = validator.validateAccount(accountNumber);
         log.info(" Getting an account with id {} user with id {}", accountId, userId);
         return accountMapper.toResponseAccountDto(account);
     }
 
     @Transactional
     public ResponseAccountDto blockAccount(long accountId, long userId) {
-        Account account = validator.checkAccount(accountId, userId);
-        validator.checkStatusAccount(account);
+        Account account = validator.validateAccount(accountId);
+        validator.checkAccountToUser(account, userId);
+        validator.checkStatusCLOSEAccount(account);
+        validator.checkStatusFREEZEAccount(account);
         account.setStatus(AccountStatus.FREEZE);
         account.setVersion(account.getVersion() + 1);
         accountRepository.save(account);
@@ -54,7 +63,7 @@ public class AccountService {
 
     @Transactional
     public ResponseAccountDto unblockAccount(long accountId, long userId) {
-        Account account = validator.checkAccount(accountId, userId);
+        Account account = validator.validateAccount(accountId);
         validator.checkStatusAccount(account);
         account.setStatus(AccountStatus.OPEN);
         account.setVersion(account.getVersion() + 1);
