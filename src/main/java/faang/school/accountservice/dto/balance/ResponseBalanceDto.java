@@ -14,11 +14,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ResponseBalanceDto {
     private long id;
-    //TODO нужно ли это поле?
     private BigDecimal authorizationBalance;
     private BigDecimal actualBalance;
-    //TODO нужно ли это поле?
     private LocalDateTime createdAt;
-    //TODO нужно ли это поле?
     private LocalDateTime updatedAt;
 }

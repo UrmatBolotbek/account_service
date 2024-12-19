@@ -1,13 +1,12 @@
 package faang.school.accountservice.service.balance;
 
-import faang.school.accountservice.dto.Money;
 import faang.school.accountservice.dto.balance.ResponseBalanceDto;
+import faang.school.accountservice.exception.AccountNotFoundException;
 import faang.school.accountservice.exception.BalanceHasBeenUpdatedException;
 import faang.school.accountservice.mapper.BalanceMapper;
 import faang.school.accountservice.model.account.Account;
 import faang.school.accountservice.model.balance.Balance;
 import faang.school.accountservice.repository.BalanceRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -36,20 +35,11 @@ public class BalanceService {
         return balance;
     }
 
-    @Transactional
-    public ResponseBalanceDto updateBalance(Long accountId, Money money) {
-        Balance balance = findBalance(accountId);
-        balance.setCurrentBalance(balance.getCurrentBalance().add(money.amount()));
-        return balanceMapper.toDto(saveBalance(balance));
-    }
-
     private Balance findBalance(Long accountId) {
         return balanceRepository.findByAccountId(accountId)
                 .orElseThrow(() -> {
                     log.warn("Balance not found for account with id: {}", accountId);
-                    return new EntityNotFoundException(
-                            "Balance not found for account with id: %d".formatted(accountId)
-                    );
+                    return new AccountNotFoundException("Account not found");
                 });
     }
 
