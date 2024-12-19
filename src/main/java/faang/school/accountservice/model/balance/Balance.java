@@ -37,7 +37,7 @@ public class Balance {
 
     @Builder.Default
     @Column(name = "current_balance", nullable = false, precision = 18, scale = 2)
-    private BigDecimal actualBalance = BigDecimal.ZERO;
+    private BigDecimal currentBalance = BigDecimal.ZERO;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
