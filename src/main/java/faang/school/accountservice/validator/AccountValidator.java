@@ -17,7 +17,7 @@ public class AccountValidator {
 
     private final AccountRepository accountRepository;
 
-        public Account validateAccount(long accountId) {
+    public Account validateAccount(long accountId) {
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new EntityNotFoundException("Account with id " + accountId + " not found"));
     }
