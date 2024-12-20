@@ -17,7 +17,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -37,15 +37,15 @@ public class Balance {
 
     @Builder.Default
     @Column(name = "current_balance", nullable = false, precision = 18, scale = 2)
-    private BigDecimal actualBalance = BigDecimal.ZERO;
+    private BigDecimal currentBalance = BigDecimal.ZERO;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
     @Version
     @Column(name = "version")
