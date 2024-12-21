@@ -26,8 +26,6 @@ public class AccountService {
     @Transactional
     public ResponseAccountDto createAccount(RequestAccountDto requestAccountDto, long userId) {
         Account account = accountMapper.toAccount(requestAccountDto);
-        int version = account.getVersion();
-        account.setVersion(++version);
         account.setOwnerId(userId);
         account.setStatus(AccountStatus.OPEN);
         accountRepository.save(account);
@@ -55,7 +53,6 @@ public class AccountService {
         validator.checkAccountToUser(account, userId);
         validator.checkStatusOpenAccount(account);
         account.setStatus(AccountStatus.FREEZE);
-        account.setVersion(account.getVersion() + 1);
         accountRepository.save(account);
         return accountMapper.toResponseAccountDto(account);
     }
@@ -66,7 +63,6 @@ public class AccountService {
         validator.checkAccountToUser(account, userId);
         validator.checkStatusFreezeAccount(account);
         account.setStatus(AccountStatus.OPEN);
-        account.setVersion(account.getVersion() + 1);
         accountRepository.save(account);
         log.info("Unblocking an account with id {} user with id {}", accountId, userId);
         return accountMapper.toResponseAccountDto(account);
@@ -78,7 +74,6 @@ public class AccountService {
         validator.checkAccountToUser(account, userId);
         validator.checkStatusCloseAccount(account);
         account.setStatus(AccountStatus.CLOSE);
-        account.setVersion(account.getVersion() + 1);
         accountRepository.save(account);
         account.setClosedAt(LocalDateTime.now());
         log.info("Closing an account with id {} user with id {}", accountId, userId);

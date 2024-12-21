@@ -48,7 +48,6 @@ public class AccountControllerTest {
     public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(accountController).build();
         requestAccountDto = RequestAccountDto.builder()
-                .number("40817810099910004312")
                 .accountType(AccountType.CREDIT)
                 .currency(Currency.RUB)
                 .ownerType(OwnerType.USER)

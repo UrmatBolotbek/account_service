@@ -47,13 +47,11 @@ public class AccountServiceTest {
     @BeforeEach
     void setUp() {
         account = Account.builder()
-                .number("40817810099910004312")
                 .accountType(AccountType.CREDIT)
                 .currency(Currency.RUB)
                 .status(AccountStatus.OPEN)
                 .build();
         requestDto = RequestAccountDto.builder()
-                .number("40817810099910004312")
                 .accountType(AccountType.CREDIT)
                 .currency(Currency.RUB)
                 .build();
