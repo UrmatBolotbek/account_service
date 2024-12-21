@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Validated
 @Slf4j
 @RequiredArgsConstructor
@@ -45,9 +47,9 @@ public class SavingsAccountController {
         return savingsAccountService.getById(accountId);
     }
 
-    @GetMapping("/{accountOwnerId}")
-    public SavingsAccountResponseDto getByOwnerId(@PathVariable long accountOwnerId) {
-        log.info("Received request to get savings account, that belong to owner with id: {}", accountOwnerId);
+    @GetMapping("/owner/{accountOwnerId}")
+    public List<SavingsAccountResponseDto> getAllByOwnerId(@PathVariable long accountOwnerId) {
+        log.info("Received request to get all savings accounts, that belong to owner with id: {}", accountOwnerId);
         return savingsAccountService.getByOwnerId(accountOwnerId);
     }
 }
