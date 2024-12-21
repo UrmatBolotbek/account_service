@@ -4,7 +4,7 @@ import faang.school.accountservice.config.context.UserContext;
 import faang.school.accountservice.dto.savings_account.SavingsAccountRequestDto;
 import faang.school.accountservice.dto.savings_account.SavingsAccountResponseDto;
 import faang.school.accountservice.service.savings_account.SavingsAccountService;
-import faang.school.accountservice.validator.UserValidator;
+import faang.school.accountservice.validator.user.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

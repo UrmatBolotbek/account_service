@@ -1,8 +1,8 @@
-package faang.school.accountservice.validator;
+package faang.school.accountservice.validator.interest_rate;
 
 import faang.school.accountservice.dto.interest_rate.InterestRateDto;
-import faang.school.accountservice.exception.InterestRateNotFound;
-import faang.school.accountservice.exception.MaximumAllowedInterestRateException;
+import faang.school.accountservice.exception.interest_rate.InterestRateNotFound;
+import faang.school.accountservice.exception.interest_rate.MaximumAllowedInterestRateException;
 import faang.school.accountservice.model.interest_rate.InterestRate;
 import faang.school.accountservice.repository.InterestRateRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class InterestRateValidator {
 
     @Value("${maximum_allowed_interest_rate}")
     private BigDecimal maxAllowedInterestRate;
-    InterestRateRepository interestRateRepository;
+    private final InterestRateRepository interestRateRepository;
 
     public void validateInterestRateDoesNotExceedMax(InterestRateDto requestDto) {
         if (requestDto.getInterestRate().compareTo(maxAllowedInterestRate) > 0) {

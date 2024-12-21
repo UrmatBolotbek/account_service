@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class InterestRateDto {
+    private Long id;
     @NotNull
     @DecimalMin("0.0")
     private BigDecimal interestRate;

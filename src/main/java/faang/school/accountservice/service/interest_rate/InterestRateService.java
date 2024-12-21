@@ -8,7 +8,7 @@ import faang.school.accountservice.mapper.interest_rate.InterestRateMapper;
 import faang.school.accountservice.model.interest_rate.InterestRate;
 import faang.school.accountservice.model.interest_rate.InterestRateChangeRecord;
 import faang.school.accountservice.repository.InterestRateRepository;
-import faang.school.accountservice.validator.InterestRateValidator;
+import faang.school.accountservice.validator.interest_rate.InterestRateValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,16 +27,20 @@ public class InterestRateService {
     private final InterestRateValidator interestRateValidator;
     private final InterestRateMapper interestRateMapper;
     private final ObjectMapper objectMapper;
-    private static final String creatingNewInterestRateAction = "CREATE";
-    private static final String updatingInterestRateAction = "UPDATE";
+    private static final String CREATING_NEW_INTEREST_RATE_ACTION = "CREATE";
+    private static final String UPDATING_INTEREST_RATE_ACTION = "UPDATE";
 
     public InterestRateDto create(InterestRateDto requestDto, long userId) {
+        requestDto.setId(null);
         InterestRate interestRate = interestRateMapper.toEntity(requestDto);
+
         List<InterestRateChangeRecord> history = new ArrayList<>();
         addToInterestRateChangeRecords(history,
                 new InterestRateChangeRecord(userId, Instant.now(),
-                        creatingNewInterestRateAction, null, requestDto.getInterestRate()),
+                        CREATING_NEW_INTEREST_RATE_ACTION, null,
+                        requestDto.getInterestRate()),
                 interestRate);
+
         interestRate = interestRateRepository.save(interestRate);
         log.info("Created interest rate {}", interestRate);
         return interestRateMapper.toDto(interestRate);
@@ -44,15 +48,17 @@ public class InterestRateService {
 
     public InterestRateDto update(Long interestRateId, InterestRateDto requestDto, long userId) {
         InterestRate interestRate = interestRateValidator.validateInterestRateExists(interestRateId);
+
         BigDecimal oldValue = interestRate.getInterestRate();
         BigDecimal newValue = requestDto.getInterestRate();
         interestRate.setInterestRate(newValue);
-        List<InterestRateChangeRecord> history = new ArrayList<>();
-        getInterestRateChangeRecords(interestRate);
+
+        List<InterestRateChangeRecord> history = getInterestRateChangeRecords(interestRate);
         addToInterestRateChangeRecords(history,
                 new InterestRateChangeRecord(userId, Instant.now(),
-                        updatingInterestRateAction, oldValue, newValue),
+                        UPDATING_INTEREST_RATE_ACTION, oldValue, newValue),
                 interestRate);
+
         interestRate = interestRateRepository.save(interestRate);
         log.info("Updated interest rate {}", interestRate);
         return interestRateMapper.toDto(interestRate);
@@ -88,9 +94,10 @@ public class InterestRateService {
         return getInterestRateChangeRecords(interestRate);
     }
 
-    private void addToInterestRateChangeRecords(List<InterestRateChangeRecord> history,
-                                                InterestRateChangeRecord userId,
-                                                InterestRate interestRate) {
+    private void addToInterestRateChangeRecords(
+            List<InterestRateChangeRecord> history,
+            InterestRateChangeRecord userId,
+            InterestRate interestRate) {
         history.add(userId);
         try {
             String jsonHistory = objectMapper.writeValueAsString(history);

@@ -1,10 +1,12 @@
 package faang.school.accountservice.controller.tariff;
 
 import faang.school.accountservice.config.context.UserContext;
+import faang.school.accountservice.dto.tariff.TariffChangeHistoryDto;
 import faang.school.accountservice.dto.tariff.TariffRequestDto;
 import faang.school.accountservice.dto.tariff.TariffResponseDto;
+import faang.school.accountservice.model.tariff.TariffChangeRecord;
 import faang.school.accountservice.service.tariff.TariffService;
-import faang.school.accountservice.validator.UserValidator;
+import faang.school.accountservice.validator.user.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Validated
 @Slf4j
@@ -57,6 +61,12 @@ public class TariffController {
         return tariffService.get(tariffId);
     }
 
+    @GetMapping()
+    public List<TariffResponseDto> getAll() {
+        log.info("Received a request to get all tariffs");
+        return tariffService.getAll();
+    }
+
     @DeleteMapping("/{tariffId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("tariffId") Long tariffId) {
@@ -65,5 +75,11 @@ public class TariffController {
         log.info("Received a request to delete a tariff with id {} by user with id {}",
                 tariffId, userId);
         tariffService.delete(tariffId);
+    }
+
+    @GetMapping("/{tariffId}/history")
+    public TariffChangeHistoryDto getHistory(@PathVariable("tariffId") Long tariffId) {
+        List<TariffChangeRecord> changes = tariffService.getTariffChangeRecords(tariffId);
+        return new TariffChangeHistoryDto(changes);
     }
 }

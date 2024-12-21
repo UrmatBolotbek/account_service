@@ -1,7 +1,7 @@
-package faang.school.accountservice.validator;
+package faang.school.accountservice.validator.user;
 
 import faang.school.accountservice.client.UserServiceClient;
-import faang.school.accountservice.exception.UserNotFoundException;
+import faang.school.accountservice.exception.user.UserNotFoundException;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 

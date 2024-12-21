@@ -1,4 +1,4 @@
-package faang.school.accountservice.exception;
+package faang.school.accountservice.exception.user;
 
 public class UserNotFoundException extends RuntimeException {
 

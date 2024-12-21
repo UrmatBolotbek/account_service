@@ -1,12 +1,12 @@
 package faang.school.accountservice.controller.interest_rate;
 
 import faang.school.accountservice.config.context.UserContext;
-import faang.school.accountservice.dto.interest_rate.ChangeHistoryDto;
+import faang.school.accountservice.dto.interest_rate.InterestRateChangeHistoryDto;
 import faang.school.accountservice.dto.interest_rate.InterestRateDto;
 import faang.school.accountservice.model.interest_rate.InterestRateChangeRecord;
 import faang.school.accountservice.service.interest_rate.InterestRateService;
-import faang.school.accountservice.validator.InterestRateValidator;
-import faang.school.accountservice.validator.UserValidator;
+import faang.school.accountservice.validator.interest_rate.InterestRateValidator;
+import faang.school.accountservice.validator.user.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -81,8 +81,8 @@ public class InterestRateController {
     }
 
     @GetMapping("/{interestRateId}/history")
-    public ChangeHistoryDto getHistory(@PathVariable("interestRateId") Long interestRateId) {
+    public InterestRateChangeHistoryDto getHistory(@PathVariable("interestRateId") Long interestRateId) {
         List<InterestRateChangeRecord> changes = interestRateService.getInterestRateChangeRecords(interestRateId);
-        return new ChangeHistoryDto(changes);
+        return new InterestRateChangeHistoryDto(changes);
     }
 }

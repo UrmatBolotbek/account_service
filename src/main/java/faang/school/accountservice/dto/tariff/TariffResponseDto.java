@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,5 +15,5 @@ import lombok.NoArgsConstructor;
 public class TariffResponseDto {
     private Long id;
     private TariffType tariffType;
-    private Double currentInterestRate;
+    private BigDecimal currentInterestRate;
 }

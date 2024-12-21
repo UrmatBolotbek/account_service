@@ -10,6 +10,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChangeHistoryDto {
+public class InterestRateChangeHistoryDto {
     private List<InterestRateChangeRecord> changeHistory;
 }

@@ -6,14 +6,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.accountservice.dto.tariff.TariffRequestDto;
 import faang.school.accountservice.dto.tariff.TariffResponseDto;
 import faang.school.accountservice.mapper.tariff.TariffMapper;
+import faang.school.accountservice.model.interest_rate.InterestRate;
 import faang.school.accountservice.model.tariff.Tariff;
+import faang.school.accountservice.model.tariff.TariffChangeRecord;
 import faang.school.accountservice.repository.TariffRepository;
 import faang.school.accountservice.service.interest_rate.InterestRateService;
-import jakarta.transaction.Transactional;
+import faang.school.accountservice.validator.tariff.TariffValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,60 +28,100 @@ public class TariffService {
     private final InterestRateService interestRateService;
     private final TariffRepository tariffRepository;
     private final TariffMapper tariffMapper;
+    private final TariffValidator tariffValidator;
     private final ObjectMapper objectMapper;
+    private static final String CREATING_NEW_TARIFF_ACTION = "CREATE";
+    private static final String UPDATING_TARIFF_ACTION = "UPDATE";
 
-    @Transactional
     public TariffResponseDto create(TariffRequestDto tariffRequestDto, long userId) {
         Tariff tariff = tariffMapper.toEntity(tariffRequestDto);
-        setInterestRateHistoryAndUser(tariffRequestDto, userId, tariff);
-        Tariff createdTariff = tariffRepository.save(tariff);
-        log.info("Tariff created: {}", createdTariff);
-        return tariffMapper.toDto(createdTariff);
+
+        List<TariffChangeRecord> history = new ArrayList<>();
+        addToTariffChangeRecords(history,
+                new TariffChangeRecord(userId, Instant.now(),
+                        CREATING_NEW_TARIFF_ACTION, null,
+                        tariffRequestDto.getInterestRateId()),
+                tariff);
+
+        tariff = tariffRepository.save(tariff);
+        log.info("Tariff created: {}", tariff);
+        return tariffMapper.toDto(tariff);
     }
 
-    @Transactional
-    public TariffResponseDto update(Long TariffId, TariffRequestDto tariffRequestDto, long userId) {
-        Tariff tariff = tariffRepository.getReferenceById(TariffId);
-        setInterestRateHistoryAndUser(tariffRequestDto, userId, tariff);
-        Tariff updatedTariff = tariffRepository.save(tariff);
-        log.info("Tariff updated: {}", updatedTariff);
-        return tariffMapper.toDto(updatedTariff);
+    public TariffResponseDto update(Long tariffId, TariffRequestDto tariffRequestDto, long userId) {
+        Tariff tariff = tariffValidator.validateTariffExists(tariffId);
+
+        Long oldInterestRateId = tariff.getInterestRate().getId();
+        Long newInterestRateId = tariffRequestDto.getInterestRateId();
+        InterestRate interestRateToSet = interestRateService.getInterestRateEntity(newInterestRateId);
+        tariff.setInterestRate(interestRateToSet);
+
+        List<TariffChangeRecord> history = getTariffChangeRecords(tariff);
+        addToTariffChangeRecords(history,
+                new TariffChangeRecord(userId, Instant.now(),
+                        UPDATING_TARIFF_ACTION, oldInterestRateId, newInterestRateId),
+                tariff);
+
+        tariff = tariffRepository.save(tariff);
+        log.info("Tariff updated: {}", tariff);
+        return tariffMapper.toDto(tariff);
     }
 
     public TariffResponseDto get(Long TariffId) {
         log.info("Retrieving Tariff: {}", TariffId);
-        Tariff tariff = tariffRepository.getReferenceById(TariffId);
+        Tariff tariff = tariffValidator.validateTariffExists(TariffId);
         return tariffMapper.toDto(tariff);
     }
 
+    public List<TariffResponseDto> getAll() {
+        log.info("Retrieving all tariffs");
+        List<Tariff> tariffs = tariffRepository.findAll();
+        return tariffMapper.toDtos(tariffs);
+    }
+
     public Tariff getTariffEntity(Long TariffId) {
+        Tariff tariff = tariffValidator.validateTariffExists(TariffId);
         log.info("Retrieving TariffEntity: {}", TariffId);
-        return tariffRepository.getReferenceById(TariffId);
+        return tariff;
     }
 
-    public void delete(Long TariffId) {
-        log.info("Deleting Tariff: {}", TariffId);
-        tariffRepository.deleteById(TariffId);
+    public void delete(Long tariffId) {
+        tariffValidator.validateTariffExists(tariffId);
+        log.info("Deleting Tariff: {}", tariffId);
+        tariffRepository.deleteById(tariffId);
     }
 
-    private void setInterestRateHistoryAndUser(TariffRequestDto tariffRequestDto, long userId, Tariff tariff) {
-        tariff.setInterestRate(interestRateService.getInterestRateEntity(tariffRequestDto.getInterestRateId()));
-        tariff.setCreatorOrChangerUserId(userId);
-        addRateToHistory(tariff, tariffRequestDto);
+    public List<TariffChangeRecord> getTariffChangeRecords(Long tariffId) {
+        Tariff tariff = tariffValidator.validateTariffExists(tariffId);
+        log.info("Retrieving TariffChangeRecords for tariff with id: {}", tariffId);
+        return getTariffChangeRecords(tariff);
     }
 
-    private void addRateToHistory(Tariff tariff, TariffRequestDto tariffRequestDto) {
+    private void addToTariffChangeRecords(
+            List<TariffChangeRecord> history,
+            TariffChangeRecord userId,
+            Tariff tariff) {
+        history.add(userId);
         try {
-            List<Double> rates = new ArrayList<>();
-            if (tariff.getRateHistory() != null) {
-                rates = objectMapper.readValue(tariff.getRateHistory(), new TypeReference<>() {
-                });
-            }
-            rates.add(interestRateService.getInterestRateEntity(tariffRequestDto.getInterestRateId()).getInterestRate());
-            tariff.setRateHistory(objectMapper.writeValueAsString(rates));
+            String jsonHistory = objectMapper.writeValueAsString(history);
+            tariff.setChangedByUserHistory(jsonHistory);
         } catch (JsonProcessingException e) {
-            log.error("Json processing error", e);
+            log.error("Error serializing TariffChangeHistory", e);
             throw new RuntimeException("Json processing error", e);
         }
+    }
+
+    private List<TariffChangeRecord> getTariffChangeRecords(Tariff tariff) {
+        List<TariffChangeRecord> history = new ArrayList<>();
+        try {
+            if (tariff.getChangedByUserHistory() != null) {
+                history = objectMapper.readValue(tariff.getChangedByUserHistory(), new TypeReference<>() {
+                });
+            }
+        } catch (JsonProcessingException e) {
+            log.error("Error deserializing TariffChangeHistory", e);
+            throw new RuntimeException("Json processing error", e);
+        }
+        return history;
     }
 }
