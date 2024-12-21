@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -29,11 +30,11 @@ public class InterestRate {
     private Long id;
 
     @Column(name = "interest_rate", nullable = false)
-    private Double interestRate;
+    private BigDecimal interestRate;
 
     @OneToMany(mappedBy = "interestRate")
     private List<Tariff> tariffs;
 
-    @Column(name = "created_or_last_changed_by", nullable = false)
-    private Long creatorOrChangerUserId;
+    @Column(name = "changed_by_user_history", columnDefinition = "TEXT", nullable = false)
+    private String changedByUserHistory;
 }

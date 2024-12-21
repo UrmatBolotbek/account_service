@@ -47,6 +47,6 @@ public class Tariff {
     @OneToMany(mappedBy = "tariff")
     private List<SavingsAccount> savingsAccounts;
 
-    @Column(name = "created_or_last_changed_by", nullable = false)
-    private Long creatorOrChangerUserId;
+    @Column(name = "changed_by_user_history", columnDefinition = "TEXT", nullable = false)
+    private String changedByUserHistory;
 }

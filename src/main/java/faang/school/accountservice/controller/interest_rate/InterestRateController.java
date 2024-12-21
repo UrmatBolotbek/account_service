@@ -1,8 +1,9 @@
 package faang.school.accountservice.controller.interest_rate;
 
 import faang.school.accountservice.config.context.UserContext;
-import faang.school.accountservice.dto.interest_rate.InterestRateRequestDto;
-import faang.school.accountservice.dto.interest_rate.InterestRateResponseDto;
+import faang.school.accountservice.dto.interest_rate.ChangeHistoryDto;
+import faang.school.accountservice.dto.interest_rate.InterestRateDto;
+import faang.school.accountservice.model.interest_rate.InterestRateChangeRecord;
 import faang.school.accountservice.service.interest_rate.InterestRateService;
 import faang.school.accountservice.validator.InterestRateValidator;
 import faang.school.accountservice.validator.UserValidator;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Validated
 @Slf4j
 @RequiredArgsConstructor
@@ -35,7 +38,7 @@ public class InterestRateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public InterestRateResponseDto create(@Valid @RequestBody InterestRateRequestDto interestRateDto) {
+    public InterestRateDto create(@Valid @RequestBody InterestRateDto interestRateDto) {
         long userId = userContext.getUserId();
         userValidator.validateUserExists(userId);
         interestRateValidator.validateInterestRateDoesNotExceedMax(interestRateDto);
@@ -45,8 +48,8 @@ public class InterestRateController {
     }
 
     @PutMapping("/{interestRateId}")
-    public InterestRateResponseDto update(@PathVariable("interestRateId") Long interestRateId,
-                                          @Valid @RequestBody InterestRateRequestDto interestRateDto) {
+    public InterestRateDto update(@PathVariable("interestRateId") Long interestRateId,
+                                  @Valid @RequestBody InterestRateDto interestRateDto) {
         long userId = userContext.getUserId();
         userValidator.validateUserExists(userId);
         interestRateValidator.validateInterestRateDoesNotExceedMax(interestRateDto);
@@ -56,9 +59,15 @@ public class InterestRateController {
     }
 
     @GetMapping("/{interestRateId}")
-    public InterestRateResponseDto get(@PathVariable("interestRateId") Long interestRateId) {
+    public InterestRateDto get(@PathVariable("interestRateId") Long interestRateId) {
         log.info("Received a request to get an interestRate with id {}", interestRateId);
         return interestRateService.get(interestRateId);
+    }
+
+    @GetMapping()
+    public List<InterestRateDto> getAll() {
+        log.info("Received a request to get all interest rates");
+        return interestRateService.getAll();
     }
 
     @DeleteMapping("/{interestRateId}")
@@ -69,5 +78,11 @@ public class InterestRateController {
         log.info("Received a request to delete an interestRate with id {} by user with id {} ",
                 interestRateId, userId);
         interestRateService.delete(interestRateId);
+    }
+
+    @GetMapping("/{interestRateId}/history")
+    public ChangeHistoryDto getHistory(@PathVariable("interestRateId") Long interestRateId) {
+        List<InterestRateChangeRecord> changes = interestRateService.getInterestRateChangeRecords(interestRateId);
+        return new ChangeHistoryDto(changes);
     }
 }
