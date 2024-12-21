@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.ToDoubleBiFunction;
+
 
 @Service
 @Slf4j
@@ -51,8 +51,8 @@ public class SavingsAccountService {
         return savingsAccountMapper.toDto(savingsAccount);
     }
 
-    public List<SavingsAccountResponseDto> getByOwnerId(Long ownerId) {
-        //TODO
+    public List<SavingsAccountResponseDto> getAllByOwnerId(Long ownerId) {
+
         return null;
     }
 
