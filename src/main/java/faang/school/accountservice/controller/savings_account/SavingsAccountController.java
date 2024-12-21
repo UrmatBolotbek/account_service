@@ -50,6 +50,6 @@ public class SavingsAccountController {
     @GetMapping("/owner/{accountOwnerId}")
     public List<SavingsAccountResponseDto> getAllByOwnerId(@PathVariable long accountOwnerId) {
         log.info("Received request to get all savings accounts, that belong to owner with id: {}", accountOwnerId);
-        return savingsAccountService.getByOwnerId(accountOwnerId);
+        return savingsAccountService.getAllByOwnerId(accountOwnerId);
     }
 }

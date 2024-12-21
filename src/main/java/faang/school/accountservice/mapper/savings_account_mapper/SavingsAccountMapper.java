@@ -13,7 +13,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = TariffMapper.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface SavingsAccountMapper {
-    @Mapping(target = "accountId", source = "account.id")
+    @Mapping(target = "savingsAccountId", source = "account.id")
     @Mapping(target = "tariffAndInterestRate", source = "tariff")
     SavingsAccountResponseDto toDto(SavingsAccount savingsAccount);
 
