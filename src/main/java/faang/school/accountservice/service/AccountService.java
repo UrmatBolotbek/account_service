@@ -36,6 +36,7 @@ public class AccountService {
     @Transactional(readOnly = true)
     public ResponseAccountDto getAccountWithId(long accountId, long userId) {
         Account account = validator.validateAccount(accountId);
+        validator.checkAccountToUser(account, userId);
         log.info("Getting an account with id {} user with id {}", accountId, userId);
         return accountMapper.toResponseAccountDto(account);
     }
@@ -43,6 +44,7 @@ public class AccountService {
     @Transactional(readOnly = true)
     public ResponseAccountDto getAccountWithNumber(String accountNumber, long userId) {
         Account account = validator.validateAccount(accountNumber);
+        validator.checkAccountToUser(account, userId);
         log.info("Getting an account with id {} user with id {}", account.getId(), userId);
         return accountMapper.toResponseAccountDto(account);
     }

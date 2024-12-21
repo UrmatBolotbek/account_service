@@ -17,28 +17,28 @@ public class AccountValidator {
 
     private final AccountRepository accountRepository;
 
-        public Account validateAccount(long accountId) {
+    public Account validateAccount(long accountId) {
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new EntityNotFoundException("Account with id " + accountId + " not found"));
     }
 
     public void checkStatusCloseAccount(Account account) {
         if (account.getStatus() == AccountStatus.CLOSE) {
-            log.warn("The account with id {} is already closed", account.getId());
+            log.error("The account with id {} is already closed", account.getId());
             throw new IllegalArgumentException("The account with id " + account.getId() + " is already closed");
         }
     }
 
     public void checkStatusOpenAccount(Account account) {
         if (account.getStatus() != AccountStatus.OPEN) {
-            log.warn("The account with id {} is not open", account.getId());
+            log.error("The account with id {} is not open", account.getId());
             throw new IllegalArgumentException("The account with id " + account.getId() + " is not open");
         }
     }
 
     public void checkStatusFreezeAccount(Account account) {
         if (account.getStatus() != AccountStatus.FREEZE) {
-            log.warn("The account with id {} is not freeze", account.getId());
+            log.error("The account with id {} is not freeze", account.getId());
             throw new IllegalArgumentException("The account with id " + account.getId() + " is not freeze");
         }
     }
