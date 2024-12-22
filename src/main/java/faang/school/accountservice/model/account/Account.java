@@ -22,6 +22,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.Version;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
@@ -58,14 +59,12 @@ public class Account {
     private AccountStatus status;
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "close_at")

@@ -65,7 +65,7 @@ public class AccountControllerTest {
         when(userContext.getUserId()).thenReturn(USER_ID);
         when(accountService.getAccountWithId(ACCOUNT_ID,USER_ID)).thenReturn(responseAccountDto);
 
-        mockMvc.perform(get("/api/v1/accounts/id/" + ACCOUNT_ID))
+        mockMvc.perform(get("/api/v1/accounts/" + ACCOUNT_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.number").value(responseAccountDto.getNumber()));
     }

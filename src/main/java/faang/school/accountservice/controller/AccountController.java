@@ -27,7 +27,7 @@ public class AccountController {
         return accountService.createAccount(requestAccountDto, userContext.getUserId());
     }
 
-    @GetMapping("/id/{accountId}")
+    @GetMapping("/{accountId}")
     public ResponseAccountDto getAccountWithId(@PathVariable long accountId) {
         return accountService.getAccountWithId(accountId, userContext.getUserId());
     }

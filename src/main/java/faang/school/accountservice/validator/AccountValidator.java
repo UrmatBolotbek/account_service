@@ -24,14 +24,14 @@ public class AccountValidator {
 
     public void checkStatusCloseAccount(Account account) {
         if (account.getStatus() == AccountStatus.CLOSE) {
-            log.error("The account with id {} is already closed", account.getId());
+            log.warn("The account with id {} is already closed", account.getId());
             throw new IllegalArgumentException("The account with id " + account.getId() + " is already closed");
         }
     }
 
     public void checkStatusOpenAccount(Account account) {
         if (account.getStatus() != AccountStatus.OPEN) {
-            log.error("The account with id {} is not open", account.getId());
+            log.warn("The account with id {} is not open", account.getId());
             throw new IllegalArgumentException("The account with id " + account.getId() + " is not open");
         }
     }
@@ -45,7 +45,7 @@ public class AccountValidator {
 
     public void checkAccountToUser(Account account, long userId) {
         if (account.getOwnerId() != userId) {
-            log.error("Account with id {} owner id {} not match", account.getId(), userId);
+            log.warn("Account with id {} owner id {} not match", account.getId(), userId);
             throw new IllegalArgumentException("The account with id " + account.getId() + " does not belong to the user " + userId);
         }
     }
@@ -53,7 +53,7 @@ public class AccountValidator {
     public Account validateAccount(String number) {
         Optional<Account> account = accountRepository.findByNumber(number);
         if (account.isEmpty()) {
-            log.error("Account with number {} not found", number);
+            log.warn("Account with number {} not found", number);
             throw new EntityNotFoundException("The account with number " + number + " not found");
         }
         return account.get();
