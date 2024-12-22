@@ -36,7 +36,7 @@ public class Account {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "number", nullable = false, unique = true, length = 20)
+    @Column( nullable = false, unique = true, length = 20)
     private String number;
 
     @Enumerated(EnumType.STRING)
@@ -51,11 +51,11 @@ public class Account {
     private AccountType accountType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "currency", nullable = false, length = 3)
+    @Column(nullable = false, length = 3)
     private Currency currency;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     private AccountStatus status;
 
     @CreationTimestamp
@@ -71,7 +71,7 @@ public class Account {
     private LocalDateTime closedAt;
 
     @Version
-    @Column(name = "version", nullable = false)
+    @Column(nullable = false)
     private int version;
 
 }
