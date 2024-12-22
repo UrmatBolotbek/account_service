@@ -1,4 +1,4 @@
-package faang.school.accountservice.controller.balance;
+package faang.school.accountservice.controller.advice;
 
 import faang.school.accountservice.exception.AccountNotFoundException;
 import faang.school.accountservice.exception.BalanceHasBeenUpdatedException;

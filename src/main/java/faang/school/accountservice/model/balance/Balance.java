@@ -3,9 +3,11 @@ package faang.school.accountservice.model.balance;
 import faang.school.accountservice.model.account.Account;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
@@ -39,8 +41,8 @@ public class Balance {
     private BigDecimal authorizationBalance = BigDecimal.ZERO;
 
     @Builder.Default
-    @Column(name = "current_balance", nullable = false, precision = 18, scale = 2)
-    private BigDecimal currentBalance = BigDecimal.ZERO;
+    @Column(name = "actual_balance", nullable = false, precision = 18, scale = 2)
+    private BigDecimal actualBalance = BigDecimal.ZERO;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
@@ -54,6 +56,7 @@ public class Balance {
     @Column(name = "version")
     private long version;
 
-    @OneToOne(mappedBy = "balance")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", nullable = false, unique = true)
     private Account account;
 }

@@ -47,14 +47,14 @@ public class BalanceServiceTest {
         balance = Balance.builder()
                 .id(100L)
                 .authorizationBalance(new BigDecimal("500.00"))
-                .currentBalance(new BigDecimal("1000.00"))
+                .actualBalance(new BigDecimal("1000.00"))
                 .account(account)
                 .build();
 
         responseBalanceDto = ResponseBalanceDto.builder()
                 .id(balance.getId())
                 .authorizationBalance(balance.getAuthorizationBalance())
-                .actualBalance(balance.getCurrentBalance())
+                .actualBalance(balance.getActualBalance())
                 .build();
     }
 
@@ -101,7 +101,7 @@ public class BalanceServiceTest {
         assertNotNull(createdBalance);
         assertEquals(balance.getId(), createdBalance.getId());
         assertEquals(balance.getAuthorizationBalance(), createdBalance.getAuthorizationBalance());
-        assertEquals(balance.getCurrentBalance(), createdBalance.getCurrentBalance());
+        assertEquals(balance.getActualBalance(), createdBalance.getActualBalance());
         assertEquals(account, createdBalance.getAccount());
 
         verify(balanceRepository, times(1)).saveAndFlush(any(Balance.class));
