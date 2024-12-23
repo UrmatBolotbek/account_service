@@ -38,7 +38,7 @@ public class AccountValidator {
 
     public void checkStatusFreezeAccount(Account account) {
         if (account.getStatus() != AccountStatus.FREEZE) {
-            log.error("The account with id {} is not freeze", account.getId());
+            log.warn("The account with id {} is not freeze", account.getId());
             throw new IllegalArgumentException("The account with id " + account.getId() + " is not freeze");
         }
     }

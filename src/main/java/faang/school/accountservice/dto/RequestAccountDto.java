@@ -17,8 +17,10 @@ public class RequestAccountDto {
 
     @NotNull(message = "OwnerType cannot be null")
     private OwnerType ownerType;
+
     @NotNull(message = "AccountType cannot be null")
     private AccountType accountType;
+
     @NotNull(message = "Currency cannot be null")
     private Currency currency;
 

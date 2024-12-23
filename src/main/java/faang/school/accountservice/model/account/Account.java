@@ -36,18 +36,18 @@ public class Account {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private long id;
 
-    @Column( nullable = false, unique = true, length = 20)
+    @Column(nullable = false, unique = true, length = 20)
     private String number;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "owner_type", nullable = false)
+    @Column(nullable = false)
     private OwnerType ownerType;
 
-    @Column(name = "owner_id", nullable = false)
+    @Column(nullable = false)
     private long ownerId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "account_type", nullable = false)
+    @Column(nullable = false)
     private AccountType accountType;
 
     @Enumerated(EnumType.STRING)
