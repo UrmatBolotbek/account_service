@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -77,7 +77,7 @@ public class AccountService {
         validator.checkStatusCloseAccount(account);
         account.setStatus(AccountStatus.CLOSE);
         accountRepository.save(account);
-        account.setClosedAt(LocalDateTime.now());
+        account.setClosedAt(OffsetDateTime.now());
         log.info("Closing an account with id {} user with id {}", accountId, userId);
         return accountMapper.toResponseAccountDto(account);
     }

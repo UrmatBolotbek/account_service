@@ -15,9 +15,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +25,6 @@ import org.hibernate.annotations.OptimisticLocking;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.Version;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Data
