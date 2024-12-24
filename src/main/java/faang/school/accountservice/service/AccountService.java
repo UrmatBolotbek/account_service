@@ -56,6 +56,7 @@ public class AccountService {
         validator.checkStatusOpenAccount(account);
         account.setStatus(AccountStatus.FREEZE);
         accountRepository.save(account);
+        log.info("Blocking an account with id {} user with id {}", accountId, userId);
         return accountMapper.toResponseAccountDto(account);
     }
 

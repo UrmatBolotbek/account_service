@@ -3,9 +3,9 @@ package faang.school.accountservice.validator;
 import faang.school.accountservice.enums.AccountStatus;
 import faang.school.accountservice.enums.AccountType;
 import faang.school.accountservice.enums.Currency;
+import faang.school.accountservice.exception.AccountNotFoundException;
 import faang.school.accountservice.model.account.Account;
 import faang.school.accountservice.repository.AccountRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,7 +46,7 @@ public class AccountValidatorTest {
     @Test
     void testValidateAccountWithException() {
         when(accountRepository.findById(ACCOUNT_ID)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> accountValidator.validateAccount(ACCOUNT_ID));
+        assertThrows(AccountNotFoundException.class, () -> accountValidator.validateAccount(ACCOUNT_ID));
     }
 
     @Test

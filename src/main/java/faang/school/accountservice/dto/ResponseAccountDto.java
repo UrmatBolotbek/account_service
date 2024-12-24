@@ -22,6 +22,6 @@ public class ResponseAccountDto {
     private AccountStatus status;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
-    private LocalDateTime closedAt;
+    private OffsetDateTime closedAt;
 
 }

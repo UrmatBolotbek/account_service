@@ -2,6 +2,7 @@ package faang.school.accountservice.controller.advice;
 
 import faang.school.accountservice.exception.AccountNotFoundException;
 import faang.school.accountservice.exception.BalanceHasBeenUpdatedException;
+import jakarta.persistence.OptimisticLockException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -49,6 +50,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleGenericException(Exception ex) {
         log.error("Unexpected error occurred: {}", ex.getMessage(), ex);
         return buildProblemDetailResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.");
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ProblemDetail> handleIllegalArgumentException(IllegalArgumentException e) {
+        return buildProblemDetailResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(OptimisticLockException.class)
+    public ResponseEntity<ProblemDetail> handleOptimisticLockException(OptimisticLockException e) {
+        log.warn("There is a version conflict");
+        return buildProblemDetailResponse(HttpStatus.CONFLICT, "The data was changed in another request," +
+                " you can repeat your request if it is still valid");
     }
 
     private ResponseEntity<ProblemDetail> buildProblemDetailResponse(HttpStatus status, String detail) {

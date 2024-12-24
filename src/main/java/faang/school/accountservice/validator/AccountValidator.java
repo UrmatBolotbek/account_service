@@ -1,5 +1,6 @@
 package faang.school.accountservice.validator;
 
+import faang.school.accountservice.exception.AccountNotFoundException;
 import faang.school.accountservice.model.account.Account;
 import faang.school.accountservice.enums.AccountStatus;
 import faang.school.accountservice.repository.AccountRepository;
@@ -19,7 +20,7 @@ public class AccountValidator {
 
     public Account validateAccount(long accountId) {
         return accountRepository.findById(accountId)
-                .orElseThrow(() -> new EntityNotFoundException("Account with id " + accountId + " not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Account with id " + accountId + " not found"));
     }
 
     public void checkStatusCloseAccount(Account account) {
@@ -54,7 +55,7 @@ public class AccountValidator {
         Optional<Account> account = accountRepository.findByNumber(number);
         if (account.isEmpty()) {
             log.warn("Account with number {} not found", number);
-            throw new EntityNotFoundException("The account with number " + number + " not found");
+            throw new AccountNotFoundException("The account with number " + number + " not found");
         }
         return account.get();
     }
