@@ -46,12 +46,6 @@ public class GlobalExceptionHandler {
         return buildProblemDetailResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ProblemDetail> handleGenericException(Exception ex) {
-        log.error("Unexpected error occurred: {}", ex.getMessage(), ex);
-        return buildProblemDetailResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.");
-    }
-
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ProblemDetail> handleIllegalArgumentException(IllegalArgumentException e) {
         return buildProblemDetailResponse(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -62,6 +56,12 @@ public class GlobalExceptionHandler {
         log.warn("There is a version conflict");
         return buildProblemDetailResponse(HttpStatus.CONFLICT, "The data was changed in another request," +
                 " you can repeat your request if it is still valid");
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ProblemDetail> handleGenericException(Exception ex) {
+        log.error("Unexpected error occurred: {}", ex.getMessage(), ex);
+        return buildProblemDetailResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.");
     }
 
     private ResponseEntity<ProblemDetail> buildProblemDetailResponse(HttpStatus status, String detail) {
