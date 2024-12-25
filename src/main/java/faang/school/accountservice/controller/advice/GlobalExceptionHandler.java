@@ -48,6 +48,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ProblemDetail> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.warn("Illegal argument: {}", e.getMessage());
         return buildProblemDetailResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
