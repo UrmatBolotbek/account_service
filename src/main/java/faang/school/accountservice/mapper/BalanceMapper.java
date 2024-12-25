@@ -1,6 +1,7 @@
 package faang.school.accountservice.mapper;
 
 import faang.school.accountservice.dto.balance.ResponseBalanceDto;
+import faang.school.accountservice.dto.balance.UpdateBalanceDto;
 import faang.school.accountservice.model.balance.Balance;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -9,4 +10,5 @@ import org.mapstruct.ReportingPolicy;
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface BalanceMapper {
     ResponseBalanceDto toDto(Balance balance);
+    UpdateBalanceDto toUpdateDto(Balance balance);
 }
