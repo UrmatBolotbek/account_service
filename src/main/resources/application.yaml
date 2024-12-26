@@ -20,6 +20,12 @@ spring:
 server:
   port: 8090
 
+
+scheduler:
+   free_account:
+     batch_size: 20;
+     cron: 0 0 0 * * *
+
 logging:
   level:
     root: info

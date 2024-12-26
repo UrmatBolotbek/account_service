@@ -9,9 +9,9 @@ public enum AccountType {
     FL_DEPOSIT(42301),
     UL_DEPOSIT(42001);
 
-    private final int accountTypeTypeNumber;
+    private final int accountTypeNumber;
 
-    AccountType(int accountTypeTypeNumber) {
-        this.accountTypeTypeNumber = accountTypeTypeNumber;
+    AccountType(int accountTypeNumber) {
+        this.accountTypeNumber = accountTypeNumber;
     }
 }

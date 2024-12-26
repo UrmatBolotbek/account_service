@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountDto {
-    private String number;
+    private long number;
     private OwnerType ownerType;
     private AccountType accountType;
     private Currency currency;

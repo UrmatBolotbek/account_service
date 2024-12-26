@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("api/v1/accounts")
@@ -17,12 +18,7 @@ public class AccountController {
     private final FreeAccountNumbersService service;
 
     @GetMapping()
-    public AccountDto getAccount(AccountType type) {
-        return service.getNewAccount(type);
-    }
-
-    @PostMapping()
-    public void generateNewAccount(AccountType type, Currency currency) {
-        service.generateAccountNumber(type, currency);
+    public AccountDto getNewAccount(@RequestParam AccountType type, @RequestParam Currency currency) {
+        return service.getNewAccount(type, currency);
     }
 }
