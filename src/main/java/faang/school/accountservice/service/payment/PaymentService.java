@@ -1,17 +1,17 @@
 package faang.school.accountservice.service.payment;
 
-import faang.school.accountservice.dto.payment.request.AuthPaymentRequest;
+import faang.school.accountservice.dto.payment.request.PaymentRequest;
 import faang.school.accountservice.dto.payment.request.CancelPaymentRequest;
 import faang.school.accountservice.dto.payment.request.ClearingPaymentRequest;
 import faang.school.accountservice.dto.payment.request.ErrorPaymentRequest;
 import faang.school.accountservice.exception.AccountNotFoundException;
 import faang.school.accountservice.exception.balance.BalanceHasBeenUpdatedException;
-import faang.school.accountservice.exception.payment.AuthPaymentHasBeenUpdatedException;
+import faang.school.accountservice.exception.payment.PaymentHasBeenUpdatedException;
 import faang.school.accountservice.model.balance.Balance;
-import faang.school.accountservice.model.payment.AuthPayment;
-import faang.school.accountservice.repository.AuthPaymentRepository;
+import faang.school.accountservice.model.payment.Payment;
+import faang.school.accountservice.repository.PaymentRepository;
 import faang.school.accountservice.repository.BalanceRepository;
-import faang.school.accountservice.validator.payment.AuthPaymentValidator;
+import faang.school.accountservice.validator.payment.PaymentValidator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,42 +22,42 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import static faang.school.accountservice.model.payment.AuthPaymentStatus.CLOSED;
-import static faang.school.accountservice.model.payment.AuthPaymentStatus.REJECTED;
+import static faang.school.accountservice.model.payment.PaymentStatus.CLOSED;
+import static faang.school.accountservice.model.payment.PaymentStatus.REJECTED;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthPaymentService {
+public class PaymentService {
 
-    private final AuthPaymentRepository authPaymentRepository;
+    private final PaymentRepository paymentRepository;
     private final BalanceRepository balanceRepository;
-    private final AuthPaymentValidator authPaymentValidator;
+    private final PaymentValidator paymentValidator;
 
     @Transactional
-    public AuthPayment authorizePayment(AuthPaymentRequest request) {
+    public Payment authorizePayment(PaymentRequest request) {
         log.info("Authorize payment, operationId={}", request.getOperationId());
         Balance source = findBalance(request.getSourceAccountId());
         Balance target = findBalance(request.getTargetAccountId());
-        authPaymentValidator.checkFreeAmount(request.getOperationId(), source, request.getAmount());
+        paymentValidator.checkFreeAmount(request.getOperationId(), source, request.getAmount());
         adjustSourceBalanceForAuthorization(source, request.getAmount());
-        AuthPayment payment = AuthPayment.builder()
+        Payment payment = Payment.builder()
                 .amount(request.getAmount())
                 .category(request.getCategory())
                 .sourceBalance(source)
                 .targetBalance(target)
                 .build();
         saveBalance(source);
-        AuthPayment savedPayment = saveAuthPayment(payment);
+        Payment savedPayment = saveAuthPayment(payment);
         log.info("Payment authorized, paymentId={}", savedPayment.getId());
         return savedPayment;
     }
 
     @Transactional
-    public AuthPayment clearingPayment(ClearingPaymentRequest request) {
+    public Payment clearingPayment(ClearingPaymentRequest request) {
         log.info("Clearing payment, operationId={}", request.getOperationId());
-        AuthPayment payment = findAuthPaymentById(request.getOperationId());
-        authPaymentValidator.checkAuthPaymentStatus(payment, "accepted");
+        Payment payment = findAuthPaymentById(request.getOperationId());
+        paymentValidator.checkAuthPaymentStatus(payment, "accepted");
         Balance source = payment.getSourceBalance();
         Balance target = payment.getTargetBalance();
         clearSourceBalance(source, payment.getAmount());
@@ -65,30 +65,30 @@ public class AuthPaymentService {
         payment.setStatus(CLOSED);
         saveBalance(source);
         saveBalance(target);
-        AuthPayment savedPayment = saveAuthPayment(payment);
+        Payment savedPayment = saveAuthPayment(payment);
         log.info("Payment cleared, paymentId={}", savedPayment.getId());
         return savedPayment;
     }
 //TODO добавить аудит после трансакций
     @Transactional
-    public AuthPayment cancelPayment(CancelPaymentRequest request) {
+    public Payment cancelPayment(CancelPaymentRequest request) {
         log.info("Cancel payment, operationId={}", request.getOperationId());
-        AuthPayment payment = rejectPayment(request.getOperationId());
+        Payment payment = rejectPayment(request.getOperationId());
         log.info("Payment cancelled, paymentId={}", payment.getId());
         return payment;
     }
 
     @Transactional
-    public AuthPayment errorPayment(ErrorPaymentRequest request) {
+    public Payment errorPayment(ErrorPaymentRequest request) {
         log.info("Error payment, operationId={}", request.getOperationId());
-        AuthPayment payment = rejectPayment(request.getOperationId());
+        Payment payment = rejectPayment(request.getOperationId());
         log.info("Payment errored, paymentId={}", payment.getId());
         return payment;
     }
 
-    private AuthPayment rejectPayment(UUID paymentId) {
-        AuthPayment payment = findAuthPaymentById(paymentId);
-        authPaymentValidator.checkAuthPaymentStatus(payment, "rejected");
+    private Payment rejectPayment(UUID paymentId) {
+        Payment payment = findAuthPaymentById(paymentId);
+        paymentValidator.checkAuthPaymentStatus(payment, "rejected");
         Balance source = payment.getSourceBalance();
         revertSourceBalance(source, payment.getAmount());
         payment.setStatus(REJECTED);
@@ -96,8 +96,8 @@ public class AuthPaymentService {
         return saveAuthPayment(payment);
     }
 
-    private AuthPayment findAuthPaymentById(UUID id) {
-        return authPaymentRepository.findById(id).orElseThrow(
+    private Payment findAuthPaymentById(UUID id) {
+        return paymentRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("AuthPayment with ID %s not found".formatted(id))
         );
     }
@@ -137,11 +137,11 @@ public class AuthPaymentService {
         }
     }
 
-    private AuthPayment saveAuthPayment(AuthPayment payment) {
+    private Payment saveAuthPayment(Payment payment) {
         try {
-            return authPaymentRepository.saveAndFlush(payment);
+            return paymentRepository.saveAndFlush(payment);
         } catch (OptimisticLockingFailureException ex) {
-            throw new AuthPaymentHasBeenUpdatedException("AuthPayment with id=%s has been updated. Reload information."
+            throw new PaymentHasBeenUpdatedException("AuthPayment with id=%s has been updated. Reload information."
                     .formatted(payment.getId()));
         }
     }

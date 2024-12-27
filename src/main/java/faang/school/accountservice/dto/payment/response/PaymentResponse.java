@@ -1,7 +1,7 @@
 package faang.school.accountservice.dto.payment.response;
 
 import faang.school.accountservice.model.payment.AccountBalanceStatus;
-import faang.school.accountservice.model.payment.PaymentStatus;
+import faang.school.accountservice.model.payment.PaymentResponseStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,8 +13,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthPaymentResponse {
+public class PaymentResponse {
     private UUID operationId;
     private AccountBalanceStatus status;
-    private PaymentStatus paymentStatus;
+    private PaymentResponseStatus paymentResponseStatus;
 }

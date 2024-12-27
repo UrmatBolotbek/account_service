@@ -1,9 +1,9 @@
 package faang.school.accountservice.validator.payment;
 
 import faang.school.accountservice.exception.payment.InsufficientFundsException;
-import faang.school.accountservice.exception.payment.InvalidAuthPaymentStatusException;
+import faang.school.accountservice.exception.payment.InvalidPaymentStatusException;
 import faang.school.accountservice.model.balance.Balance;
-import faang.school.accountservice.model.payment.AuthPayment;
+import faang.school.accountservice.model.payment.Payment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import static faang.school.accountservice.model.payment.AuthPaymentStatus.ACTIVE;
+import static faang.school.accountservice.model.payment.PaymentStatus.ACTIVE;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AuthPaymentValidator {
+public class PaymentValidator {
 
     public void checkFreeAmount(UUID operationId, Balance sourceBalance, BigDecimal amount) {
         log.debug("Validating balance for operationId={}, balanceId={}, requestedAmount={}",
@@ -33,14 +33,14 @@ public class AuthPaymentValidator {
         log.debug("Sufficient funds for operationId={}, balanceId={}", operationId, sourceBalance.getId());
     }
 
-    public void checkAuthPaymentStatus(AuthPayment payment, String operationName) {
+    public void checkAuthPaymentStatus(Payment payment, String operationName) {
         log.debug("Checking payment status for operation='{}', paymentId={}, currentStatus={}",
                 operationName, payment.getId(), payment.getStatus());
 
         if (!ACTIVE.equals(payment.getStatus())) {
             log.warn("Operation '{}' is not possible, paymentId={}, currentStatus={}",
                     operationName, payment.getId(), payment.getStatus());
-            throw new InvalidAuthPaymentStatusException(
+            throw new InvalidPaymentStatusException(
                     "AuthPayment with id=%s cannot be %s, current status=%s"
                             .formatted(payment.getId(), operationName, payment.getStatus())
             );

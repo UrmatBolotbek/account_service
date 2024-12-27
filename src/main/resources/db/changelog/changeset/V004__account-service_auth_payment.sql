@@ -1,4 +1,4 @@
-CREATE TABLE auth_payment(
+CREATE TABLE payment(
     id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     source_balance_id BIGINT NOT NULL,
     target_balance_id BIGINT NOT NULL,

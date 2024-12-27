@@ -16,7 +16,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthPaymentRequest {
+public class PaymentRequest {
     private UUID operationId;
     private Long sourceAccountId;
     private Long targetAccountId;

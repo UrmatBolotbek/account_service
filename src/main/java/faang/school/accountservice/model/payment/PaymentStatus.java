@@ -1,6 +1,7 @@
 package faang.school.accountservice.model.payment;
 
 public enum PaymentStatus {
-    SUCCESS,
-    FAILED
+    ACTIVE,
+    CLOSED,
+    REJECTED
 }

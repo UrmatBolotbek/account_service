@@ -25,16 +25,16 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import static faang.school.accountservice.model.payment.AuthPaymentStatus.ACTIVE;
+import static faang.school.accountservice.model.payment.PaymentStatus.ACTIVE;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "auth_payment")
+@Table(name = "payment")
 @OptimisticLocking(type = OptimisticLockType.VERSION)
-public class AuthPayment {
+public class Payment {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -50,7 +50,7 @@ public class AuthPayment {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private AuthPaymentStatus status = ACTIVE;
+    private PaymentStatus status = ACTIVE;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
