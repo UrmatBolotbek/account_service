@@ -39,7 +39,7 @@ public class Account {
     private long id;
 
     @Column(name = "number", nullable = false, unique = true, length = 20)
-    private long number;
+    private String number;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "owner_type", nullable = false)

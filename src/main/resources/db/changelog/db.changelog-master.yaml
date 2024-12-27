@@ -6,6 +6,8 @@ databaseChangeLog:
   - include:
       file: db/changelog/changeset/V003__account-service_update_account.sql
   - include:
-      file: db/changelog/changeset/V004_create_free_account_numbers.sql
+      file: db/changelog/changeset/V006___create_free_account_numbers.sql
   - include:
-      file: db/changelog/changeset/V005_create_account_number_sequence.sql
+      file: db/changelog/changeset/V005___create_account_number_sequence.sql
+  - include:
+      file: db/changelog/changeset/V008___update_free_account_number.sql

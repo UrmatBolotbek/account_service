@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class AccountNumberScheduler {
     private final FreeAccountNumbersService service;
 
-    @Value("${scheduler.free_account.batchSize}")
+    @Value("${scheduler.free_account.batch_size}")
     private int batchSize;
 
     @Scheduled(cron = "${scheduler.free_account.cron}")

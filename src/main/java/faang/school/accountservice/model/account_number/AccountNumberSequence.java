@@ -30,6 +30,9 @@ public class AccountNumberSequence {
     @EmbeddedId
     private AccountSequenceId id;
 
+    @Column(name = "counter")
+    private long counter;
+
     @Transient
     private long initialValue;
 }
