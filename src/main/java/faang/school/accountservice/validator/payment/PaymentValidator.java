@@ -41,12 +41,12 @@ public class PaymentValidator {
             log.warn("Operation '{}' is not possible, paymentId={}, currentStatus={}",
                     operationName, payment.getId(), payment.getStatus());
             throw new InvalidPaymentStatusException(
-                    "AuthPayment with id=%s cannot be %s, current status=%s"
+                    "Payment with id=%s cannot be %s, current status=%s"
                             .formatted(payment.getId(), operationName, payment.getStatus())
             );
         }
 
-        log.debug("AuthPayment is ACTIVE, operation='{}' is possible, paymentId={}",
+        log.debug("Payment is ACTIVE, operation='{}' is possible, paymentId={}",
                 operationName, payment.getId());
     }
 }

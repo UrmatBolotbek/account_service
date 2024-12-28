@@ -37,8 +37,8 @@ public class PaymentService {
     @Transactional
     public Payment authorizePayment(PaymentRequest request) {
         log.info("Authorize payment, operationId={}", request.getOperationId());
-        Balance source = findBalance(request.getSourceAccountId());
-        Balance target = findBalance(request.getTargetAccountId());
+        Balance source = findBalanceById(request.getSourceAccountId());
+        Balance target = findBalanceById(request.getTargetAccountId());
         paymentValidator.checkFreeAmount(request.getOperationId(), source, request.getAmount());
         adjustSourceBalanceForAuthorization(source, request.getAmount());
         Payment payment = Payment.builder()
@@ -48,7 +48,7 @@ public class PaymentService {
                 .targetBalance(target)
                 .build();
         saveBalance(source);
-        Payment savedPayment = saveAuthPayment(payment);
+        Payment savedPayment = savePayment(payment);
         log.info("Payment authorized, paymentId={}", savedPayment.getId());
         return savedPayment;
     }
@@ -56,7 +56,7 @@ public class PaymentService {
     @Transactional
     public Payment clearingPayment(ClearingPaymentRequest request) {
         log.info("Clearing payment, operationId={}", request.getOperationId());
-        Payment payment = findAuthPaymentById(request.getOperationId());
+        Payment payment = findPaymentById(request.getOperationId());
         paymentValidator.checkAuthPaymentStatus(payment, "accepted");
         Balance source = payment.getSourceBalance();
         Balance target = payment.getTargetBalance();
@@ -65,7 +65,7 @@ public class PaymentService {
         payment.setStatus(CLOSED);
         saveBalance(source);
         saveBalance(target);
-        Payment savedPayment = saveAuthPayment(payment);
+        Payment savedPayment = savePayment(payment);
         log.info("Payment cleared, paymentId={}", savedPayment.getId());
         return savedPayment;
     }
@@ -87,22 +87,22 @@ public class PaymentService {
     }
 
     private Payment rejectPayment(UUID paymentId) {
-        Payment payment = findAuthPaymentById(paymentId);
+        Payment payment = findPaymentById(paymentId);
         paymentValidator.checkAuthPaymentStatus(payment, "rejected");
         Balance source = payment.getSourceBalance();
         revertSourceBalance(source, payment.getAmount());
         payment.setStatus(REJECTED);
         saveBalance(source);
-        return saveAuthPayment(payment);
+        return savePayment(payment);
     }
 
-    private Payment findAuthPaymentById(UUID id) {
+    private Payment findPaymentById(UUID id) {
         return paymentRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("AuthPayment with ID %s not found".formatted(id))
+                () -> new EntityNotFoundException("Payment with ID %s not found".formatted(id))
         );
     }
 
-    private Balance findBalance(Long accountId) {
+    private Balance findBalanceById(Long accountId) {
         return balanceRepository.findByAccountId(accountId)
                 .orElseThrow(() -> {
                     log.warn("Balance not found for accountId={}", accountId);
@@ -137,11 +137,11 @@ public class PaymentService {
         }
     }
 
-    private Payment saveAuthPayment(Payment payment) {
+    private Payment savePayment(Payment payment) {
         try {
             return paymentRepository.saveAndFlush(payment);
         } catch (OptimisticLockingFailureException ex) {
-            throw new PaymentHasBeenUpdatedException("AuthPayment with id=%s has been updated. Reload information."
+            throw new PaymentHasBeenUpdatedException("Payment with id=%s has been updated. Reload information."
                     .formatted(payment.getId()));
         }
     }
