@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Builder
 @Data
@@ -19,5 +19,5 @@ public class BalanceAuditDto {
     private Long actualBalance;
     private Long requestId;
     private Long operationId;
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 }

@@ -1,7 +1,6 @@
 package faang.school.accountservice.service.balance;
 
 import faang.school.accountservice.dto.balance.ResponseBalanceDto;
-import faang.school.accountservice.dto.balance.UpdateBalanceDto;
 import faang.school.accountservice.exception.AccountNotFoundException;
 import faang.school.accountservice.exception.BalanceHasBeenUpdatedException;
 import faang.school.accountservice.mapper.BalanceMapper;
@@ -35,17 +34,6 @@ public class BalanceService {
         account.setBalance(balance);
         log.info("Balance with id {} is created", balance.getId());
         return balance;
-    }
-
-    @Transactional
-    public ResponseBalanceDto updateBalance(UpdateBalanceDto balanceDto, long operationId) {
-        log.info("Updating balance for account with id {}", balanceDto.getAccountId());
-        Balance balance = findBalance(balanceDto.getAccountId());
-        balanceMapper.toUpdateDto(balance);
-        Balance updatedBalance = saveBalance(balance);
-
-        log.info("Balance with id {} updated", balance.getId());
-        return balanceMapper.toDto(updatedBalance);
     }
 
     private Balance findBalance(Long accountId) {
