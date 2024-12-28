@@ -22,7 +22,7 @@ public class BalanceAuditService {
         return balanceAuditRepository.save(audit);
     }
 
-    public List<BalanceAuditDto> gerAuditHistory(Long accountId) {
+    public List<BalanceAuditDto> getAuditHistory(Long accountId) {
         return balanceAuditMapper.toListAuditDto(
                 balanceAuditRepository.findByAccountId(accountId)
         );

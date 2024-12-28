@@ -2,6 +2,7 @@ package faang.school.accountservice.controller.balance;
 
 import faang.school.accountservice.controller.advice.GlobalExceptionHandler;
 import faang.school.accountservice.dto.balance.ResponseBalanceDto;
+import faang.school.accountservice.dto.balance.UpdateBalanceDto;
 import faang.school.accountservice.exception.AccountNotFoundException;
 import faang.school.accountservice.service.balance.BalanceService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,10 +17,19 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 
+import org.springframework.http.MediaType;
+
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BalanceControllerTest {
@@ -82,4 +92,23 @@ public class BalanceControllerTest {
 
         verify(balanceService).getBalance(INVALID_ACCOUNT_ID);
     }
+
+    @Test
+    @DisplayName("PUT /api/v1/account/{accountId}/balance/update - Success")
+    public void updateBalance_Success() throws Exception {
+        UpdateBalanceDto updateBalanceDto = new UpdateBalanceDto();
+        long operationId = 123L;
+
+        // Only stub once
+        when(balanceService.updateBalance(updateBalanceDto, operationId)).thenReturn(validResponseBalanceDto);
+
+        mockMvc.perform(put("/api/v1/account/{accountId}/balance/update", 123L)  // accountId value added here
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(updateBalanceDto))
+                        .param("operationId", String.valueOf(operationId)))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }
+
+

@@ -21,7 +21,6 @@ public class BalanceService {
 
     private final BalanceRepository balanceRepository;
     private final BalanceMapper balanceMapper;
-    private final BalanceAuditService balanceAuditService;
 
 
     @Transactional(readOnly = true)
@@ -34,7 +33,6 @@ public class BalanceService {
         log.info("Creating a balance for account with id {}", account.getId());
         Balance balance = saveBalance(Balance.builder().account(account).build());
         account.setBalance(balance);
-        balanceAuditService.createAudit(balance, null);
         log.info("Balance with id {} is created", balance.getId());
         return balance;
     }
@@ -45,7 +43,6 @@ public class BalanceService {
         Balance balance = findBalance(balanceDto.getAccountId());
         balanceMapper.toUpdateDto(balance);
         Balance updatedBalance = saveBalance(balance);
-        balanceAuditService.createAudit(updatedBalance, operationId);
 
         log.info("Balance with id {} updated", balance.getId());
         return balanceMapper.toDto(updatedBalance);

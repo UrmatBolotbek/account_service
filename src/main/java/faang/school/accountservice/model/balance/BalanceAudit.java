@@ -27,20 +27,27 @@ import java.time.OffsetDateTime;
 @Entity
 @Table(name = "balance-audit")
 public class BalanceAudit {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @OneToOne
     @JoinColumn(name = "account_id", referencedColumnName = "id")
-    private Account accountId;
+    private long accountId;
+
     @Column(name = "balance_version", nullable = false)
     private long balanceVersion;
+
     @Column(name = "authorized_balance", nullable = false, precision = 18, scale = 2)
     private BigDecimal authorizedBalance;
+
     @Column(name = "actual_balance", nullable = false, precision = 18, scale = 2)
     private BigDecimal actualBalance;
+
     @Column(name = "operation_id")
     private long operationId;
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
