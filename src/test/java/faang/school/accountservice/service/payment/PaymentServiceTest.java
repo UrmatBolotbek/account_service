@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
-import static faang.school.accountservice.model.account.Currency.USD;
+import static faang.school.accountservice.enums.Currency.USD;
 import static faang.school.accountservice.model.payment.Category.OTHER;
 import static faang.school.accountservice.model.payment.PaymentStatus.ACTIVE;
 import static faang.school.accountservice.model.payment.PaymentStatus.CLOSED;

@@ -27,7 +27,7 @@ public class PaymentValidatorTest {
     private static final BigDecimal AUTH_BALANCE = BigDecimal.valueOf(1.0);
     private static final BigDecimal FIRST_AMOUNT = BigDecimal.valueOf(2.0);
     private static final BigDecimal SECOND_AMOUNT = BigDecimal.valueOf(2.0);
-    private final static String OPERATION_NAME = "accept";
+    private final static String OPERATION_NAME = "accepted";
 
     @InjectMocks
     private PaymentValidator paymentValidator;
