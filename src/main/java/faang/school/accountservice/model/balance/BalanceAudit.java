@@ -25,19 +25,18 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "balance-audit")
+@Table(name = "balance_audit")
 public class BalanceAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
-    private long accountId;
+    @JoinColumn(name = "account_id")
+    private Long accountId;
 
     @Column(name = "balance_version", nullable = false)
-    private long balanceVersion;
+    private Long balanceVersion;
 
     @Column(name = "authorized_balance", nullable = false, precision = 18, scale = 2)
     private BigDecimal authorizedBalance;
@@ -46,7 +45,7 @@ public class BalanceAudit {
     private BigDecimal actualBalance;
 
     @Column(name = "operation_id")
-    private long operationId;
+    private Long operationId;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
