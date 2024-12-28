@@ -1,6 +1,6 @@
 package faang.school.accountservice.mapper.account;
 
-import faang.school.accountservice.dto.account.AccountDto;
+import faang.school.accountservice.dto.account.ResponseAccountDto;
 import faang.school.accountservice.model.account.Account;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -12,5 +12,5 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface AccountMapper {
 
-    AccountDto toDto(Account account);
+    ResponseAccountDto toDto(Account account);
 }

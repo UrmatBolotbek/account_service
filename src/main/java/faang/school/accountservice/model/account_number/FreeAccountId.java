@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 @Getter
 @AllArgsConstructor
@@ -20,7 +19,7 @@ import java.math.BigInteger;
 public class FreeAccountId implements Serializable {
 
     @Column(name = "account_number", nullable = false)
-    private BigInteger accountNumber;
+    private String accountNumber;
 
     @Column(name = "type", nullable = false, length = 32)
     @Enumerated(value = EnumType.STRING)

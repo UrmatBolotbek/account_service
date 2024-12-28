@@ -5,6 +5,11 @@ spring:
     username: user
     password: password
 
+  data:
+    redis:
+     port: 6379
+     host: localhost
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
@@ -23,7 +28,7 @@ server:
 
 scheduler:
    free_account:
-     batch_size: 20
+     batch_size: 2
      cron: 0 * * * * ?
 
 logging:
