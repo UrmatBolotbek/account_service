@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +24,4 @@ public class AccountNumberSequence {
 
     @Column(name = "counter")
     private long counter;
-
-    @Transient
-    private long initialValue;
 }

@@ -17,7 +17,7 @@ public interface AccountNumbersSequenceRepository extends JpaRepository<AccountN
             UPDATE account_numbers_sequence 
             SET counter = counter + :batchSize
             WHERE type = :type AND currency = :currency
-            RETURNING type, currency, counter, (SELECT counter FROM old_value) AS initialValue
+            RETURNING type, currency, counter
             """)
     AccountNumberSequence incrementCounter(String type, String currency, int batchSize);
 }
