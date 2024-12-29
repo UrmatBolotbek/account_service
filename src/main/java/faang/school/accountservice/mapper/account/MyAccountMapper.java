@@ -10,7 +10,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE
 )
-public interface AccountMapper {
+public interface MyAccountMapper {
 
     ResponseAccountDto toDto(Account account);
 }

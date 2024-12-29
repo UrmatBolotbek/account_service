@@ -3,8 +3,7 @@ package faang.school.accountservice.service.free_account;
 import faang.school.accountservice.cache.FreeAccountNumberCache;
 import faang.school.accountservice.dto.account.RequestAccountDto;
 import faang.school.accountservice.dto.account.ResponseAccountDto;
-import faang.school.accountservice.dto.balance.ResponseBalanceDto;
-import faang.school.accountservice.mapper.account.AccountMapper;
+import faang.school.accountservice.mapper.account.MyAccountMapper;
 import faang.school.accountservice.model.account.Account;
 import faang.school.accountservice.model.account.AccountStatus;
 import faang.school.accountservice.model.account.AccountType;
@@ -13,7 +12,6 @@ import faang.school.accountservice.model.account_number.AccountNumberSequence;
 import faang.school.accountservice.model.account_number.AccountSequenceId;
 import faang.school.accountservice.model.account_number.FreeAccountId;
 import faang.school.accountservice.model.account_number.FreeAccountNumber;
-import faang.school.accountservice.model.balance.Balance;
 import faang.school.accountservice.repository.AccountNumbersSequenceRepository;
 import faang.school.accountservice.repository.AccountRepository;
 import faang.school.accountservice.repository.FreeAccountNumbersRepository;
@@ -32,7 +30,7 @@ public class FreeAccountNumbersService {
     private final FreeAccountNumbersRepository freeAccountNumbersRepository;
     private final AccountNumbersSequenceRepository accountNumbersSequenceRepository;
     private final AccountRepository accountRepository;
-    private final AccountMapper mapper;
+    private final MyAccountMapper mapper;
 
     @Transactional
     public ResponseAccountDto getNewAccount(RequestAccountDto requestAccountDto) {
