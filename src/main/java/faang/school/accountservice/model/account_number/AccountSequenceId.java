@@ -1,7 +1,7 @@
 package faang.school.accountservice.model.account_number;
 
-import faang.school.accountservice.model.account.AccountType;
-import faang.school.accountservice.model.account.Currency;
+import faang.school.accountservice.enums.AccountType;
+import faang.school.accountservice.enums.Currency;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;

@@ -2,8 +2,8 @@ package faang.school.accountservice.cache;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.accountservice.model.account.AccountType;
-import faang.school.accountservice.model.account.Currency;
+import faang.school.accountservice.enums.AccountType;
+import faang.school.accountservice.enums.Currency;
 import faang.school.accountservice.model.account_number.FreeAccountNumber;
 import faang.school.accountservice.repository.FreeAccountNumbersRepository;
 import lombok.RequiredArgsConstructor;
