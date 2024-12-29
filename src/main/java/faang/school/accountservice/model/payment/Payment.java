@@ -17,8 +17,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.OptimisticLockType;
-import org.hibernate.annotations.OptimisticLocking;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
@@ -33,7 +31,6 @@ import static faang.school.accountservice.model.payment.PaymentStatus.ACTIVE;
 @NoArgsConstructor
 @Entity
 @Table(name = "payment")
-@OptimisticLocking(type = OptimisticLockType.VERSION)
 public class Payment {
 
     @Id

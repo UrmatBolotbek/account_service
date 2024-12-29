@@ -27,7 +27,6 @@ public class PaymentValidatorTest {
     private static final BigDecimal AUTH_BALANCE = BigDecimal.valueOf(1.0);
     private static final BigDecimal FIRST_AMOUNT = BigDecimal.valueOf(2.0);
     private static final BigDecimal SECOND_AMOUNT = BigDecimal.valueOf(2.0);
-    private final static String OPERATION_NAME = "accepted";
 
     @InjectMocks
     private PaymentValidator paymentValidator;
@@ -74,14 +73,14 @@ public class PaymentValidatorTest {
 
     @Test
     void testCheckAuthPaymentForAccept_exception() {
-        assertThatThrownBy(() -> paymentValidator.checkAuthPaymentStatus(closedPayment, OPERATION_NAME))
+        assertThatThrownBy(() -> paymentValidator.checkAuthPaymentStatus(closedPayment))
                 .isInstanceOf(InvalidPaymentStatusException.class)
-                .hasMessageContaining("Payment with id=%s cannot be %s, current status=%s"
-                        .formatted(closedPayment.getId(), OPERATION_NAME, closedPayment.getStatus()));
+                .hasMessageContaining("Payment with id=%s cannot be accepted/rejected, current status=%s"
+                        .formatted(closedPayment.getId(), closedPayment.getStatus()));
     }
 
     @Test
     void testCheckAuthPaymentForAccept_successful() {
-        assertDoesNotThrow(() -> paymentValidator.checkAuthPaymentStatus(activePayment, OPERATION_NAME));
+        assertDoesNotThrow(() -> paymentValidator.checkAuthPaymentStatus(activePayment));
     }
 }
