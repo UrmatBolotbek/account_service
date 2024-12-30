@@ -1,11 +1,15 @@
 package faang.school.accountservice.service.account;
 
+import faang.school.accountservice.cache.FreeAccountNumberCache;
+import faang.school.accountservice.dto.account.RequestAccountDto;
 import faang.school.accountservice.dto.account.ResponseAccountDto;
 import faang.school.accountservice.enums.AccountStatus;
 import faang.school.accountservice.enums.AccountType;
 import faang.school.accountservice.enums.Currency;
 import faang.school.accountservice.mapper.account.AccountMapperImpl;
 import faang.school.accountservice.model.account.Account;
+import faang.school.accountservice.model.account_number.FreeAccountId;
+import faang.school.accountservice.model.account_number.FreeAccountNumber;
 import faang.school.accountservice.repository.AccountRepository;
 import faang.school.accountservice.validator.AccountValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +44,11 @@ public class AccountServiceTest {
     @Mock
     private AccountValidator validator;
 
+    @Mock
+    private FreeAccountNumberCache freeAccountNumberCache;
+
+    private RequestAccountDto requestDto;
+
     private Account account;
 
     @BeforeEach
@@ -49,6 +58,20 @@ public class AccountServiceTest {
                 .currency(Currency.RUB)
                 .status(AccountStatus.OPEN)
                 .build();
+        requestDto = RequestAccountDto.builder()
+                .accountType(AccountType.FL)
+                .currency(Currency.RUB)
+                .build();
+    }
+
+    @Test
+    void testCreateAccountSuccess() {
+        when(freeAccountNumberCache.getFreeAccount(account.getAccountType(), account.getCurrency()))
+                .thenReturn(new FreeAccountNumber(new FreeAccountId()));
+        when(accountMapper.toEntity(requestDto)).thenReturn(account);
+        accountService.createAccount(requestDto, USER_ID);
+        verify(accountRepository).save(accountCaptor.capture());
+        assertEquals(AccountStatus.OPEN, accountCaptor.getValue().getStatus());
     }
 
     @Test

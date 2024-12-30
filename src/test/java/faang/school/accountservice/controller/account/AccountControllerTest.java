@@ -47,11 +47,17 @@ public class AccountControllerTest {
     private UserContext userContext;
 
     private ResponseAccountDto responseAccountDto;
+    private RequestAccountDto requestAccountDto;
 
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(accountController)
                 .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
+        requestAccountDto = RequestAccountDto.builder()
+                .accountType(AccountType.FL)
+                .currency(Currency.RUB)
+                .ownerType(OwnerType.USER)
                 .build();
         responseAccountDto = ResponseAccountDto.builder()
                 .number("40817810099910004312")
@@ -59,6 +65,19 @@ public class AccountControllerTest {
                 .currency(Currency.RUB)
                 .status(AccountStatus.OPEN)
                 .build();
+    }
+
+    @Test
+    void testCreateAccount() throws Exception {
+        when(userContext.getUserId()).thenReturn(USER_ID);
+        when(accountService.createAccount(requestAccountDto,USER_ID)).thenReturn(responseAccountDto);
+        String requestDtoJson = new Gson().toJson(requestAccountDto);
+
+        mockMvc.perform(post("/api/v1/accounts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestDtoJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.number").value(responseAccountDto.getNumber()));
     }
 
     @Test

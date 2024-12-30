@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
 
     private final AccountService accountService;
-    private final FreeAccountNumbersService freeAccountNumbersService;
     private final UserContext userContext;
 
-    @GetMapping()
-    public ResponseAccountDto getFreeAccount(@RequestBody RequestAccountDto requestAccountDto) {
-        return freeAccountNumbersService.getFreeAccount(requestAccountDto, userContext.getUserId());
+    @PostMapping()
+    public ResponseAccountDto createAccount(@RequestBody RequestAccountDto requestAccountDto) {
+        return accountService.createAccount(requestAccountDto, userContext.getUserId());
     }
 
     @GetMapping("/{accountId}")

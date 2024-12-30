@@ -1,9 +1,12 @@
 package faang.school.accountservice.service.account;
 
+import faang.school.accountservice.cache.FreeAccountNumberCache;
+import faang.school.accountservice.dto.account.RequestAccountDto;
 import faang.school.accountservice.dto.account.ResponseAccountDto;
 import faang.school.accountservice.mapper.account.AccountMapper;
 import faang.school.accountservice.model.account.Account;
 import faang.school.accountservice.enums.AccountStatus;
+import faang.school.accountservice.model.account_number.FreeAccountNumber;
 import faang.school.accountservice.repository.AccountRepository;
 import faang.school.accountservice.validator.AccountValidator;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +22,21 @@ import java.time.OffsetDateTime;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final FreeAccountNumberCache freeAccountNumberCache;
     private final AccountMapper accountMapper;
     private final AccountValidator validator;
+
+    @Transactional
+    public ResponseAccountDto createAccount(RequestAccountDto requestAccountDto, long userId) {
+        FreeAccountNumber freeAccount = freeAccountNumberCache.getFreeAccount(requestAccountDto.getAccountType(), requestAccountDto.getCurrency());
+        Account account = accountMapper.toEntity(requestAccountDto);
+        account.setNumber(String.valueOf(freeAccount.getId().getAccountNumber()));
+        account.setOwnerId(userId);
+        account.setStatus(AccountStatus.OPEN);
+        accountRepository.save(account);
+        log.info("Created account for user {}", userId);
+        return accountMapper.toDto(account);
+    }
 
     @Transactional(readOnly = true)
     public ResponseAccountDto getAccountWithId(long accountId, long userId) {
