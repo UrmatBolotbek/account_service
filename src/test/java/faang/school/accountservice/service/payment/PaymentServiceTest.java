@@ -39,8 +39,6 @@ public class PaymentServiceTest {
     private static final UUID OPERATION_ID = UUID.randomUUID();
     private static final BigDecimal FIRST_AMOUNT = BigDecimal.valueOf(1.0);
     private static final BigDecimal SECOND_AMOUNT = BigDecimal.valueOf(1.0);
-    private static final String OPERATION_NAME_ACCEPT = "accepted";
-    private static final String OPERATION_NAME_REJECT = "rejected";
 
     @Mock
     private BalanceRepository balanceRepository;
@@ -158,7 +156,7 @@ public class PaymentServiceTest {
 
         ArgumentCaptor<Payment> paymentForValidCaptor = ArgumentCaptor.forClass(Payment.class);
 
-        verify(paymentValidator).checkAuthPaymentStatus(paymentForValidCaptor.capture(), eq(OPERATION_NAME_ACCEPT));
+        verify(paymentValidator).checkAuthPaymentStatus(paymentForValidCaptor.capture());
 
         ArgumentCaptor<Balance> balancesCaptor = ArgumentCaptor.forClass(Balance.class);
         ArgumentCaptor<Payment> paymentCaptor = ArgumentCaptor.forClass(Payment.class);
@@ -200,7 +198,7 @@ public class PaymentServiceTest {
 
         ArgumentCaptor<Payment> authPaymentForValidCaptor = ArgumentCaptor.forClass(Payment.class);
 
-        verify(paymentValidator).checkAuthPaymentStatus(authPaymentForValidCaptor.capture(), eq(OPERATION_NAME_REJECT));
+        verify(paymentValidator).checkAuthPaymentStatus(authPaymentForValidCaptor.capture());
 
         ArgumentCaptor<Balance> sourceBalanceCaptor = ArgumentCaptor.forClass(Balance.class);
         ArgumentCaptor<Payment> paymentCaptor = ArgumentCaptor.forClass(Payment.class);
@@ -232,7 +230,7 @@ public class PaymentServiceTest {
 
         ArgumentCaptor<Payment> authPaymentForValidCaptor = ArgumentCaptor.forClass(Payment.class);
 
-        verify(paymentValidator).checkAuthPaymentStatus(authPaymentForValidCaptor.capture(), eq(OPERATION_NAME_REJECT));
+        verify(paymentValidator).checkAuthPaymentStatus(authPaymentForValidCaptor.capture());
 
         ArgumentCaptor<Balance> sourceBalanceCaptor = ArgumentCaptor.forClass(Balance.class);
         ArgumentCaptor<Payment> paymentCaptor = ArgumentCaptor.forClass(Payment.class);

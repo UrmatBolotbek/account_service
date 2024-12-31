@@ -64,7 +64,7 @@ public class PaymentService {
     public Payment clearingPayment(ClearingPaymentRequest request) {
         log.info("Clearing payment, operationId={}", request.getOperationId());
         Payment payment = findPaymentById(request.getOperationId());
-        paymentValidator.checkAuthPaymentStatus(payment, "accepted");
+        paymentValidator.checkAuthPaymentStatus(payment);
         Balance source = payment.getSourceBalance();
         Balance target = payment.getTargetBalance();
         clearSourceBalance(source, payment.getAmount());
@@ -98,7 +98,7 @@ public class PaymentService {
 
     private Payment rejectPayment(UUID paymentId) {
         Payment payment = findPaymentById(paymentId);
-        paymentValidator.checkAuthPaymentStatus(payment, "rejected");
+        paymentValidator.checkAuthPaymentStatus(payment);
         Balance source = payment.getSourceBalance();
         revertSourceBalance(source, payment.getAmount());
         payment.setStatus(REJECTED);

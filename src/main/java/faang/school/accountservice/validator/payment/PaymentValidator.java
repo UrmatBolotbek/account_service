@@ -33,20 +33,19 @@ public class PaymentValidator {
         log.debug("Sufficient funds for operationId={}, balanceId={}", operationId, sourceBalance.getId());
     }
 
-    public void checkAuthPaymentStatus(Payment payment, String operationName) {
-        log.debug("Checking payment status for operation='{}', paymentId={}, currentStatus={}",
-                operationName, payment.getId(), payment.getStatus());
+    public void checkAuthPaymentStatus(Payment payment) {
+        log.debug("Checking payment status for operation paymentId={}, currentStatus={}"
+                , payment.getId(), payment.getStatus());
 
         if (!ACTIVE.equals(payment.getStatus())) {
-            log.warn("Operation '{}' is not possible, paymentId={}, currentStatus={}",
-                    operationName, payment.getId(), payment.getStatus());
+            log.warn("Operation is not possible, paymentId={}, currentStatus={}",
+                    payment.getId(), payment.getStatus());
             throw new InvalidPaymentStatusException(
-                    "Payment with id=%s cannot be %s, current status=%s"
-                            .formatted(payment.getId(), operationName, payment.getStatus())
+                    "Payment with id=%s cannot be accepted/rejected, current status=%s"
+                            .formatted(payment.getId(), payment.getStatus())
             );
         }
 
-        log.debug("Payment is ACTIVE, operation='{}' is possible, paymentId={}",
-                operationName, payment.getId());
+        log.debug("Payment is ACTIVE, operation is possible, paymentId={}", payment.getId());
     }
 }
