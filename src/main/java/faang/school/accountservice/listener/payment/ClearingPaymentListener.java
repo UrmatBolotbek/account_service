@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class ClearingPaymentListener extends AbstractEventListener<ClearingPaymentRequest> {
     private final PaymentService paymentService;
 
-    @Value("${spring.data.redis.channel.clearing-payment.request}")
+    @Value("${spring.data.redis.channels.clearing-payment.request}")
     private String topicName;
 
     public ClearingPaymentListener(ObjectMapper objectMapper,

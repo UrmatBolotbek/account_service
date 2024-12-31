@@ -19,7 +19,7 @@ import static faang.school.accountservice.model.payment.PaymentResponseStatus.SU
 @Component
 public class CancelPaymentPublisher extends AbstractPaymentPublisher<CancelPaymentResponse> {
 
-    @Value("${spring.data.redis.channel.cancel-payment.response}")
+    @Value("${spring.data.redis.channels.cancel-payment.response}")
     private String topicName;
 
     public CancelPaymentPublisher(RedisTemplate<String, Object> redisTemplate,

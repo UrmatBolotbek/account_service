@@ -19,7 +19,7 @@ import static faang.school.accountservice.model.payment.PaymentResponseStatus.SU
 @Component
 public class ClearingPaymentPublisher extends AbstractPaymentPublisher<ClearingPaymentResponse> {
 
-    @Value("${spring.data.redis.channel.clearing-payment.response}")
+    @Value("${spring.data.redis.channels.clearing-payment.response}")
     private String topicName;
 
     public ClearingPaymentPublisher(RedisTemplate<String, Object> redisTemplate,

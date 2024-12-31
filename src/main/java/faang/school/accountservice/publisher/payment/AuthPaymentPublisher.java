@@ -23,7 +23,7 @@ import static faang.school.accountservice.model.payment.PaymentResponseStatus.SU
 @Component
 public class AuthPaymentPublisher extends AbstractPaymentPublisher<PaymentResponse> {
 
-    @Value("${spring.data.redis.channel.payment.response}")
+    @Value("${spring.data.redis.channels.auth-payment.response}")
     private String topicName;
 
     public AuthPaymentPublisher(RedisTemplate<String, Object> redisTemplate,

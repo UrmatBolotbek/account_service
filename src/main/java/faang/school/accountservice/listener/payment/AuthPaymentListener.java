@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class AuthPaymentListener extends AbstractEventListener<PaymentRequest> {
     private final PaymentService paymentService;
 
-    @Value("${spring.data.redis.channel.payment.request}")
+    @Value("${spring.data.redis.channels.auth-payment.request}")
     private String topicName;
 
     public AuthPaymentListener(ObjectMapper objectMapper,

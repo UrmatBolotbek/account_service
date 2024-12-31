@@ -19,7 +19,7 @@ import static faang.school.accountservice.model.payment.PaymentResponseStatus.SU
 @Component
 public class ErrorPaymentPublisher extends AbstractPaymentPublisher<ErrorPaymentResponse> {
 
-    @Value("${spring.data.redis.channel.error-payment.response}")
+    @Value("${spring.data.redis.channels.error-payment.response}")
     private String topicName;
 
     public ErrorPaymentPublisher(RedisTemplate<String, Object> redisTemplate,

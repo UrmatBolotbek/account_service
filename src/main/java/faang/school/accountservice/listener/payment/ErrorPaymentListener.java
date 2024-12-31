@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class ErrorPaymentListener extends AbstractEventListener<ErrorPaymentRequest> {
     private final PaymentService paymentService;
 
-    @Value("${spring.data.redis.channel.error-payment.request}")
+    @Value("${spring.data.redis.channels.error-payment.request}")
     String topicName;
 
     public ErrorPaymentListener(ObjectMapper objectMapper,

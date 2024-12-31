@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class CancelPaymentListener extends AbstractEventListener<CancelPaymentRequest> {
     private final PaymentService paymentService;
 
-    @Value("${spring.data.redis.channel.cancel-payment.request}")
+    @Value("${spring.data.redis.channels.cancel-payment.request}")
     private String topicName;
 
     public CancelPaymentListener(ObjectMapper objectMapper,
