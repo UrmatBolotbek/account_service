@@ -1,5 +1,6 @@
 package faang.school.accountservice.config.redis;
 
+import faang.school.accountservice.listener.abstracts.EventMessageListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
+import java.util.List;
 
 @Configuration
 @EnableRedisRepositories
@@ -50,14 +52,14 @@ public class RedisConfig {
                 .build();
     }
 
-//    @Bean
-//    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory redisConnectionFactory,
-//                                                        List<EventMessageListener> listeners) {
-//        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-//        container.setConnectionFactory(redisConnectionFactory);
-//
-//        listeners.forEach(listener -> container.addMessageListener(listener, listener.getTopic()));
-//
-//        return container;
-//    }
+    @Bean
+    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory redisConnectionFactory,
+                                                        List<EventMessageListener> listeners) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(redisConnectionFactory);
+
+        listeners.forEach(listener -> container.addMessageListener(listener, listener.getTopic()));
+
+        return container;
+    }
 }
