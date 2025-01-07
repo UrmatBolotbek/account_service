@@ -5,6 +5,7 @@ import faang.school.accountservice.dto.account.RequestAccountDto;
 import faang.school.accountservice.dto.account.ResponseAccountDto;
 import faang.school.accountservice.service.account.AccountService;
 import faang.school.accountservice.service.account.FreeAccountNumbersService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +25,8 @@ public class AccountController {
     private final AccountService accountService;
     private final UserContext userContext;
 
-    @PostMapping()
-    public ResponseAccountDto createAccount(@RequestBody RequestAccountDto requestAccountDto) {
+    @PostMapping
+    public ResponseAccountDto createAccount(@Valid @RequestBody RequestAccountDto requestAccountDto) {
         return accountService.createAccount(requestAccountDto, userContext.getUserId());
     }
 

@@ -13,12 +13,15 @@ public interface FreeAccountNumbersRepository extends JpaRepository<FreeAccountN
 
     @Query(nativeQuery = true,
             value = """
-                    SELECT *
-                    FROM free_account_numbers fan 
-                    WHERE fan.type = :type AND currency = :currency AND fan.account_number = (
-                    SELECT account_number
-                    FROM free_account_numbers
-                    WHERE type = :type AND currency = :currency
+                  SELECT *
+                  FROM free_account_numbers fan
+                  WHERE fan.type = :type
+                    AND currency = :currency
+                    AND fan.account_number = (
+                      SELECT account_number
+                      FROM free_account_numbers
+                      WHERE type = :type
+                        AND currency = :currency
                       LIMIT 1
                     );
                           """)

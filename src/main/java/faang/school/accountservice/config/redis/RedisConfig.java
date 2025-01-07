@@ -36,15 +36,4 @@ public class RedisConfig {
         template.setValueSerializer(new StringRedisSerializer());
         return template;
     }
-
-    @Bean
-    public CacheManager cacheManager() {
-        RedisCacheConfiguration config = RedisCacheConfiguration
-                .defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(60));
-
-        return RedisCacheManager.builder(jedisConnectionFactory())
-                .cacheDefaults(config)
-                .build();
-    }
 }
