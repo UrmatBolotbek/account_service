@@ -30,7 +30,6 @@ public class BalanceService {
     public Balance createBalance(Account account) {
         log.info("Creating a balance for account with id {}", account.getId());
         Balance balance = saveBalance(Balance.builder().account(account).build());
-        account.setBalance(balance);
         log.info("Balance with id {} is created", balance.getId());
         return balance;
     }
@@ -47,7 +46,8 @@ public class BalanceService {
         try {
             return balanceRepository.saveAndFlush(balance);
         } catch (OptimisticLockingFailureException exception) {
-            throw new BalanceHasBeenUpdatedException(balance.getId());
+            throw new BalanceHasBeenUpdatedException("Balance with id=%s has been updated. Reload information."
+                    .formatted(balance.getId()));
         }
     }
 }

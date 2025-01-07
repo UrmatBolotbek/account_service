@@ -1,7 +1,8 @@
 package faang.school.accountservice.controller.advice;
 
 import faang.school.accountservice.exception.AccountNotFoundException;
-import faang.school.accountservice.exception.BalanceHasBeenUpdatedException;
+import faang.school.accountservice.exception.payment.PaymentHasBeenUpdatedException;
+import faang.school.accountservice.exception.balance.BalanceHasBeenUpdatedException;
 import jakarta.persistence.OptimisticLockException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,11 +34,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({
-            BalanceHasBeenUpdatedException.class
+            BalanceHasBeenUpdatedException.class,
+            PaymentHasBeenUpdatedException.class
     })
     public ResponseEntity<ProblemDetail> handleBadRequestExceptions(RuntimeException ex) {
         log.warn("Bad request: {}", ex.getMessage());
-        return buildProblemDetailResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return buildProblemDetailResponse(HttpStatus.CONFLICT, ex.getMessage());
     }
 
     @ExceptionHandler(AccountNotFoundException.class)

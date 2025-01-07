@@ -20,8 +20,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OptimisticLockType;
-import org.hibernate.annotations.OptimisticLocking;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.Version;
 
@@ -33,7 +31,6 @@ import java.time.OffsetDateTime;
 @Builder
 @Entity
 @Table(name = "account")
-@OptimisticLocking(type = OptimisticLockType.VERSION)
 public class Account {
 
     @Id
