@@ -1,5 +1,9 @@
 package faang.school.accountservice.model.account;
 
+import faang.school.accountservice.enums.AccountStatus;
+import faang.school.accountservice.enums.AccountType;
+import faang.school.accountservice.enums.Currency;
+import faang.school.accountservice.enums.OwnerType;
 import faang.school.accountservice.model.balance.Balance;
 import faang.school.accountservice.model.savings_account.SavingsAccount;
 import jakarta.persistence.CascadeType;
@@ -13,17 +17,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OptimisticLockType;
-import org.hibernate.annotations.OptimisticLocking;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.Version;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -34,42 +34,39 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "account")
-@OptimisticLocking(type = OptimisticLockType.VERSION)
 public class Account {
 
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "number", nullable = false, unique = true, length = 20)
+    @Column(nullable = false, unique = true, length = 20)
     private String number;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "owner_type", nullable = false)
+    @Column(nullable = false)
     private OwnerType ownerType;
 
-    @Column(name = "owner_id", nullable = false)
+    @Column(nullable = false)
     private long ownerId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "account_type", nullable = false)
+    @Column(nullable = false)
     private AccountType accountType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "currency", nullable = false, length = 3)
+    @Column(nullable = false, length = 3)
     private Currency currency;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     private AccountStatus status;
 
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
 
     @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
     private OffsetDateTime updatedAt;
 

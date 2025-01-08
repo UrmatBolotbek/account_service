@@ -1,7 +1,9 @@
 package faang.school.accountservice.controller.advice;
 
-import faang.school.accountservice.exception.account.AccountNotFoundException;
+import faang.school.accountservice.exception.AccountNotFoundException;
+import faang.school.accountservice.exception.payment.PaymentHasBeenUpdatedException;
 import faang.school.accountservice.exception.balance.BalanceHasBeenUpdatedException;
+import jakarta.persistence.OptimisticLockException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -32,17 +34,31 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({
-            BalanceHasBeenUpdatedException.class
+            BalanceHasBeenUpdatedException.class,
+            PaymentHasBeenUpdatedException.class
     })
     public ResponseEntity<ProblemDetail> handleBadRequestExceptions(RuntimeException ex) {
         log.warn("Bad request: {}", ex.getMessage());
-        return buildProblemDetailResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return buildProblemDetailResponse(HttpStatus.CONFLICT, ex.getMessage());
     }
 
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleAccountNotFoundException(AccountNotFoundException ex) {
         log.warn("Account not found: {}", ex.getMessage());
         return buildProblemDetailResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ProblemDetail> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.warn("Illegal argument: {}", e.getMessage());
+        return buildProblemDetailResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(OptimisticLockException.class)
+    public ResponseEntity<ProblemDetail> handleOptimisticLockException(OptimisticLockException e) {
+        log.warn("There is a version conflict");
+        return buildProblemDetailResponse(HttpStatus.CONFLICT, "The data was changed in another request," +
+                " you can repeat your request if it is still valid");
     }
 
     @ExceptionHandler(Exception.class)
