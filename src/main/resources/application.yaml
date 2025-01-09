@@ -16,6 +16,12 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
+  rabbitmq:
+    listener:
+      direct:
+        retry:
+          initial-interval:
+
 
 server:
   port: 8090
@@ -29,3 +35,15 @@ user-service:
   port: 8080
 
 maximum_allowed_interest_rate: 15
+
+executor:
+  threads:
+    count: 5
+
+scheduler:
+  calculatePercents:
+    cron: "0 0 0 * * ?"
+
+retry:
+  interestCalculator:
+    maxAttempts: "5"

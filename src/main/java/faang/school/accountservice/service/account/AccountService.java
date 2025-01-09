@@ -1,13 +1,18 @@
 package faang.school.accountservice.service.account;
 
+import faang.school.accountservice.dto.RequestAccountDto;
+import faang.school.accountservice.dto.ResponseAccountDto;
+import faang.school.accountservice.mapper.account.AccountMapper;
 import faang.school.accountservice.model.account.Account;
+import faang.school.accountservice.enums.AccountStatus;
 import faang.school.accountservice.repository.AccountRepository;
 import faang.school.accountservice.validator.account.AccountValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.time.OffsetDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -15,16 +20,72 @@ import java.util.List;
 public class AccountService {
 
     private final AccountRepository accountRepository;
-    private final AccountValidator accountValidator;
+    private final AccountMapper accountMapper;
+    private final AccountValidator validator;
 
-    public Account getAccountEntity(long id) {
-        Account account = accountValidator.validateAccountExists(id);
-        log.info("getAccountEntity by id: {}: ", id);
-        return account;
+    @Transactional
+    public ResponseAccountDto createAccount(RequestAccountDto requestAccountDto, long userId) {
+        Account account = accountMapper.toAccount(requestAccountDto);
+        account.setOwnerId(userId);
+        account.setStatus(AccountStatus.OPEN);
+        accountRepository.save(account);
+        log.info("Created account for user {}", userId);
+        return accountMapper.toResponseAccountDto(account);
     }
 
-    public List<Account> getAllByOwnerId(long id) {
-        log.info("Getting Accounts for owner with id: {}: ", id);
-        return accountRepository.findAllByOwnerId(id);
+    @Transactional(readOnly = true)
+    public ResponseAccountDto getAccountWithId(long accountId, long userId) {
+        Account account = validator.validateAccount(accountId);
+        validator.checkAccountToUser(account, userId);
+        log.info("Getting an account with id {} user with id {}", accountId, userId);
+        return accountMapper.toResponseAccountDto(account);
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseAccountDto getAccountWithNumber(String accountNumber, long userId) {
+        Account account = validator.validateAccount(accountNumber);
+        validator.checkAccountToUser(account, userId);
+        log.info("Getting an account with id {} user with id {}", account.getId(), userId);
+        return accountMapper.toResponseAccountDto(account);
+    }
+
+    @Transactional
+    public ResponseAccountDto blockAccount(long accountId, long userId) {
+        Account account = validator.validateAccount(accountId);
+        validator.checkAccountToUser(account, userId);
+        validator.checkStatusOpenAccount(account);
+        account.setStatus(AccountStatus.FREEZE);
+        accountRepository.save(account);
+        log.info("Blocking an account with id {} user with id {}", accountId, userId);
+        return accountMapper.toResponseAccountDto(account);
+    }
+
+    @Transactional
+    public ResponseAccountDto unblockAccount(long accountId, long userId) {
+        Account account = validator.validateAccount(accountId);
+        validator.checkAccountToUser(account, userId);
+        validator.checkStatusFreezeAccount(account);
+        account.setStatus(AccountStatus.OPEN);
+        accountRepository.save(account);
+        log.info("Unblocking an account with id {} user with id {}", accountId, userId);
+        return accountMapper.toResponseAccountDto(account);
+    }
+
+    @Transactional
+    public ResponseAccountDto closeAccount(long accountId, long userId) {
+        Account account = validator.validateAccount(accountId);
+        validator.checkAccountToUser(account, userId);
+        validator.checkStatusCloseAccount(account);
+        account.setStatus(AccountStatus.CLOSE);
+        accountRepository.save(account);
+        account.setClosedAt(OffsetDateTime.now());
+        log.info("Closing an account with id {} user with id {}", accountId, userId);
+        return accountMapper.toResponseAccountDto(account);
+    }
+
+    public Account getAccountEntity(long id) {
+        Account account = validator.validateAccountExists(id);
+        log.info("getAccountEntity by id: {}: ", id);
+        return account;
     }
 }

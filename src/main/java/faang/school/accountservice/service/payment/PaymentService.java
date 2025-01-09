@@ -1,16 +1,16 @@
 package faang.school.accountservice.service.payment;
 
-import faang.school.accountservice.dto.payment.request.PaymentRequest;
 import faang.school.accountservice.dto.payment.request.CancelPaymentRequest;
 import faang.school.accountservice.dto.payment.request.ClearingPaymentRequest;
 import faang.school.accountservice.dto.payment.request.ErrorPaymentRequest;
-import faang.school.accountservice.exception.AccountNotFoundException;
+import faang.school.accountservice.dto.payment.request.PaymentRequest;
+import faang.school.accountservice.exception.account.AccountNotFoundException;
 import faang.school.accountservice.exception.balance.BalanceHasBeenUpdatedException;
 import faang.school.accountservice.exception.payment.PaymentHasBeenUpdatedException;
 import faang.school.accountservice.model.balance.Balance;
 import faang.school.accountservice.model.payment.Payment;
-import faang.school.accountservice.repository.PaymentRepository;
 import faang.school.accountservice.repository.BalanceRepository;
+import faang.school.accountservice.repository.PaymentRepository;
 import faang.school.accountservice.validator.payment.PaymentValidator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -69,7 +69,8 @@ public class PaymentService {
         log.info("Payment cleared, paymentId={}", savedPayment.getId());
         return savedPayment;
     }
-//TODO добавить аудит после трансакций
+
+    //TODO добавить аудит после трансакций
     @Transactional
     public Payment cancelPayment(CancelPaymentRequest request) {
         log.info("Cancel payment, operationId={}", request.getOperationId());
@@ -132,8 +133,7 @@ public class PaymentService {
         try {
             balanceRepository.saveAndFlush(balance);
         } catch (OptimisticLockingFailureException ex) {
-            throw new BalanceHasBeenUpdatedException("Balance with id=%s has been updated. Reload information."
-                    .formatted(balance.getId()));
+            throw new BalanceHasBeenUpdatedException(balance.getId());
         }
     }
 
