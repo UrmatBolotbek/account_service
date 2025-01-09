@@ -24,10 +24,21 @@ spring:
 
     scheduler:
       account:
-        number:
-          cron-debit: 0 0 0 * * *
-          cron-credit: 0 0 0 * * *
-          batch-size: 100
+        generation:
+          cron: 0 0  * * *
+          required-batch:
+            FL_RUB: 500
+            FL_USD: 200
+            FL_EUR: 300
+            UL_RUB: 1000
+            UL_USD: 500
+            UL_EUR: 400
+            FL_DEPOSIT_RUB: 100
+            FL_DEPOSIT_USD: 50
+            FL_DEPOSIT_EUR: 75
+            UL_DEPOSIT_RUB: 150
+            UL_DEPOSIT_USD: 100
+            UL_DEPOSIT_EUR: 120
 
 server:
   port: 8090

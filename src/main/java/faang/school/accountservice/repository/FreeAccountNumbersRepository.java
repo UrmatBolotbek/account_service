@@ -26,4 +26,13 @@ public interface FreeAccountNumbersRepository extends JpaRepository<FreeAccountN
                     );
                           """)
     Optional<FreeAccountNumber> retrieveFirst(String type, String currency);
+
+    @Query(nativeQuery = true,
+            value = """
+                  SELECT COUNT(*)
+                  FROM free_account_numbers
+                  WHERE type = :type
+                    AND currency = :currency
+                  """)
+    long countByTypeAndCurrency(String type, String currency);
 }
