@@ -48,6 +48,7 @@ public class PaymentService {
         paymentValidator.checkFreeAmount(request.getOperationId(), source, request.getAmount());
         adjustSourceBalanceForAuthorization(source, request.getAmount());
         Payment payment = Payment.builder()
+                .id(request.getOperationId())
                 .amount(request.getAmount())
                 .category(request.getCategory())
                 .sourceBalance(source)
