@@ -1,8 +1,7 @@
-package faang.school.accountservice.controller;
+package faang.school.accountservice.controller.account;
 
 import com.google.gson.Gson;
 import faang.school.accountservice.config.context.UserContext;
-import faang.school.accountservice.controller.account.AccountController;
 import faang.school.accountservice.controller.advice.GlobalExceptionHandler;
 import faang.school.accountservice.dto.RequestAccountDto;
 import faang.school.accountservice.dto.ResponseAccountDto;
@@ -69,7 +68,7 @@ public class AccountControllerTest {
 
     @Test
     void testGetAccountWithIdWithException() throws Exception {
-        when(accountService.getAccountWithId(INVALID_ACCOUNT_ID,USER_ID))
+        when(accountService.getAccountWithId(INVALID_ACCOUNT_ID, USER_ID))
                 .thenThrow(new AccountNotFoundException("Account not found"));
         when(userContext.getUserId()).thenReturn(USER_ID);
 
@@ -81,13 +80,13 @@ public class AccountControllerTest {
                 .andExpect(jsonPath("$.detail").value("Account not found"))
                 .andExpect(jsonPath("$.instance").value("/api/v1/accounts/18"));
 
-        verify(accountService).getAccountWithId(INVALID_ACCOUNT_ID,USER_ID);
+        verify(accountService).getAccountWithId(INVALID_ACCOUNT_ID, USER_ID);
     }
 
     @Test
     void testGetAccountWithId() throws Exception {
         when(userContext.getUserId()).thenReturn(USER_ID);
-        when(accountService.getAccountWithId(ACCOUNT_ID,USER_ID)).thenReturn(responseAccountDto);
+        when(accountService.getAccountWithId(ACCOUNT_ID, USER_ID)).thenReturn(responseAccountDto);
 
         mockMvc.perform(get("/api/v1/accounts/" + ACCOUNT_ID))
                 .andExpect(status().isOk())
@@ -97,7 +96,7 @@ public class AccountControllerTest {
     @Test
     void testGetAccountWithNumber() throws Exception {
         when(userContext.getUserId()).thenReturn(USER_ID);
-        when(accountService.getAccountWithNumber("40817810099910004312",USER_ID)).thenReturn(responseAccountDto);
+        when(accountService.getAccountWithNumber("40817810099910004312", USER_ID)).thenReturn(responseAccountDto);
 
         mockMvc.perform(get("/api/v1/accounts/number/" + "40817810099910004312"))
                 .andExpect(status().isOk())
@@ -107,7 +106,7 @@ public class AccountControllerTest {
     @Test
     void testBlockAccount() throws Exception {
         when(userContext.getUserId()).thenReturn(USER_ID);
-        when(accountService.blockAccount(ACCOUNT_ID,USER_ID)).thenReturn(responseAccountDto);
+        when(accountService.blockAccount(ACCOUNT_ID, USER_ID)).thenReturn(responseAccountDto);
         mockMvc.perform(put("/api/v1/accounts/" + ACCOUNT_ID + "/block"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.number").value(responseAccountDto.getNumber()));
@@ -116,7 +115,7 @@ public class AccountControllerTest {
     @Test
     void testCloseAccount() throws Exception {
         when(userContext.getUserId()).thenReturn(USER_ID);
-        when(accountService.closeAccount(ACCOUNT_ID,USER_ID)).thenReturn(responseAccountDto);
+        when(accountService.closeAccount(ACCOUNT_ID, USER_ID)).thenReturn(responseAccountDto);
         mockMvc.perform(put("/api/v1/accounts/" + ACCOUNT_ID + "/close"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.number").value(responseAccountDto.getNumber()));
@@ -125,7 +124,7 @@ public class AccountControllerTest {
     @Test
     void testUnblockAccount() throws Exception {
         when(userContext.getUserId()).thenReturn(USER_ID);
-        when(accountService.unblockAccount(ACCOUNT_ID,USER_ID)).thenReturn(responseAccountDto);
+        when(accountService.unblockAccount(ACCOUNT_ID, USER_ID)).thenReturn(responseAccountDto);
         mockMvc.perform(put("/api/v1/accounts/" + ACCOUNT_ID + "/unblock"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.number").value(responseAccountDto.getNumber()));
@@ -134,7 +133,7 @@ public class AccountControllerTest {
     @Test
     void testCreateAccount() throws Exception {
         when(userContext.getUserId()).thenReturn(USER_ID);
-        when(accountService.createAccount(requestAccountDto,USER_ID)).thenReturn(responseAccountDto);
+        when(accountService.createAccount(requestAccountDto, USER_ID)).thenReturn(responseAccountDto);
         String requestDtoJson = new Gson().toJson(requestAccountDto);
 
         mockMvc.perform(post("/api/v1/accounts")

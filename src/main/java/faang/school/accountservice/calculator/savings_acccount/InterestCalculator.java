@@ -19,7 +19,8 @@ public class InterestCalculator {
             log.info("Thread name: {} take Savings Account id: {}", Thread.currentThread().getName(), savingsAccount.getId());
             BigDecimal updatedBalance = savingsAccount.getBalance()
                     .divide(ONE_HUNDRED_PERCENT, RoundingMode.HALF_UP)
-                    .multiply(savingsAccount.getTariff().getInterestRate().getInterestRate());
+                    .multiply(savingsAccount.getTariff().getInterestRate().getInterestRate())
+                    .setScale(2, RoundingMode.HALF_UP);
 
             log.info("Thread name: {} save Savings Account id: {}", Thread.currentThread().getName(), savingsAccount.getId());
             savingsAccount.setBalance(updatedBalance);

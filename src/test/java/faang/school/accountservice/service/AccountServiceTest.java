@@ -108,6 +108,4 @@ public class AccountServiceTest {
         verify(accountRepository).save(accountCaptor.capture());
         assertEquals(AccountStatus.CLOSE, accountCaptor.getValue().getStatus());
     }
-
-
 }
