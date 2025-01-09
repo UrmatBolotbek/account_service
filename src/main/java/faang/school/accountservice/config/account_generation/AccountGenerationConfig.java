@@ -4,9 +4,11 @@ import faang.school.accountservice.enums.AccountType;
 import faang.school.accountservice.enums.Currency;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+@Component
 @ConfigurationProperties(prefix = "scheduler.account.generation")
 @Data
 public class AccountGenerationConfig {
