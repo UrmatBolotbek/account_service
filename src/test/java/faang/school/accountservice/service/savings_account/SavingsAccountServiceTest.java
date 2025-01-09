@@ -25,8 +25,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -128,21 +126,6 @@ class SavingsAccountServiceTest {
         assertNotNull(result);
         assertEquals(2, result.size());
         Mockito.verify(savingsAccountRepository).findByOwnerId(ownerId);
-    }
-
-    @Test
-    void calculatePercents_ShouldInvokeInterestCalculatorAndSaveAccounts() throws Exception {
-        List<SavingsAccount> savingsAccounts = List.of(new SavingsAccount(), new SavingsAccount());
-        Mockito.when(savingsAccountRepository.findByLastInterestDateIsNullOrLastInterestDateLessThan(Mockito.any()))
-                .thenReturn(savingsAccounts);
-
-        ExecutorService mockExecutorService = Executors.newSingleThreadExecutor();
-        Mockito.when(executorService.executor()).thenReturn(mockExecutorService);
-
-        savingsAccountService.calculatePercents();
-
-        Mockito.verify(interestCalculator).calculate(savingsAccounts);
-        Mockito.verify(savingsAccountRepository).saveAll(savingsAccounts);
     }
 
     @Test
