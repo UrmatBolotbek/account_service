@@ -1,16 +1,21 @@
 package faang.school.accountservice.service.payment;
 
+import faang.school.accountservice.annotation.PublishPayment;
+import faang.school.accountservice.dto.payment.request.PaymentRequest;
 import faang.school.accountservice.dto.payment.request.CancelPaymentRequest;
 import faang.school.accountservice.dto.payment.request.ClearingPaymentRequest;
 import faang.school.accountservice.dto.payment.request.ErrorPaymentRequest;
-import faang.school.accountservice.dto.payment.request.PaymentRequest;
-import faang.school.accountservice.exception.account.AccountNotFoundException;
+import faang.school.accountservice.dto.payment.response.CancelPaymentResponse;
+import faang.school.accountservice.dto.payment.response.ClearingPaymentResponse;
+import faang.school.accountservice.dto.payment.response.ErrorPaymentResponse;
+import faang.school.accountservice.dto.payment.response.PaymentResponse;
+import faang.school.accountservice.exception.AccountNotFoundException;
 import faang.school.accountservice.exception.balance.BalanceHasBeenUpdatedException;
 import faang.school.accountservice.exception.payment.PaymentHasBeenUpdatedException;
 import faang.school.accountservice.model.balance.Balance;
 import faang.school.accountservice.model.payment.Payment;
-import faang.school.accountservice.repository.BalanceRepository;
 import faang.school.accountservice.repository.PaymentRepository;
+import faang.school.accountservice.repository.BalanceRepository;
 import faang.school.accountservice.validator.payment.PaymentValidator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +39,7 @@ public class PaymentService {
     private final BalanceRepository balanceRepository;
     private final PaymentValidator paymentValidator;
 
+    @PublishPayment(returnedType = PaymentResponse.class)
     @Transactional
     public Payment authorizePayment(PaymentRequest request) {
         log.info("Authorize payment, operationId={}", request.getOperationId());
@@ -42,6 +48,7 @@ public class PaymentService {
         paymentValidator.checkFreeAmount(request.getOperationId(), source, request.getAmount());
         adjustSourceBalanceForAuthorization(source, request.getAmount());
         Payment payment = Payment.builder()
+                .id(request.getOperationId())
                 .amount(request.getAmount())
                 .category(request.getCategory())
                 .sourceBalance(source)
@@ -53,6 +60,7 @@ public class PaymentService {
         return savedPayment;
     }
 
+    @PublishPayment(returnedType = ClearingPaymentResponse.class)
     @Transactional
     public Payment clearingPayment(ClearingPaymentRequest request) {
         log.info("Clearing payment, operationId={}", request.getOperationId());
@@ -71,6 +79,7 @@ public class PaymentService {
     }
 
     //TODO добавить аудит после трансакций
+    @PublishPayment(returnedType = CancelPaymentResponse.class)
     @Transactional
     public Payment cancelPayment(CancelPaymentRequest request) {
         log.info("Cancel payment, operationId={}", request.getOperationId());
@@ -79,6 +88,7 @@ public class PaymentService {
         return payment;
     }
 
+    @PublishPayment(returnedType = ErrorPaymentResponse.class)
     @Transactional
     public Payment errorPayment(ErrorPaymentRequest request) {
         log.info("Error payment, operationId={}", request.getOperationId());
@@ -133,7 +143,8 @@ public class PaymentService {
         try {
             balanceRepository.saveAndFlush(balance);
         } catch (OptimisticLockingFailureException ex) {
-            throw new BalanceHasBeenUpdatedException(balance.getId());
+            throw new BalanceHasBeenUpdatedException("Balance with id=%s has been updated. Reload information."
+                    .formatted(balance.getId()));
         }
     }
 

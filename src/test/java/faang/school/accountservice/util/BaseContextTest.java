@@ -3,7 +3,6 @@ package faang.school.accountservice.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redis.testcontainers.RedisContainer;
 import faang.school.accountservice.AccountServiceApplication;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,41 +22,44 @@ import org.testcontainers.utility.DockerImageName;
                 AccountServiceApplication.class
         }
 )
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @Testcontainers
 @AutoConfigureMockMvc
 public class BaseContextTest {
+
+    private static final String POSTGRES_IMAGE = "postgres:13.6";
+    private static final String POSTGRES_DB_NAME = "testdb";
+    private static final String POSTGRES_USER = "testuser";
+    private static final String POSTGRES_PASSWORD = "testpassword";
+
+    private static final String REDIS_IMAGE = "redis/redis-stack:latest";
+    private static final int REDIS_PORT = 6379;
+
+    @Container
+    public static final PostgreSQLContainer<?> POSTGRES_CONTAINER =
+            new PostgreSQLContainer<>(DockerImageName.parse(POSTGRES_IMAGE))
+                    .withDatabaseName(POSTGRES_DB_NAME)
+                    .withUsername(POSTGRES_USER)
+                    .withPassword(POSTGRES_PASSWORD);
+
+    @Container
+    public static final RedisContainer REDIS_CONTAINER =
+            new RedisContainer(DockerImageName.parse(REDIS_IMAGE));
+
+    @DynamicPropertySource
+    public static void dynamicProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
+        registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
+        registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
+
+        registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
+        registry.add("spring.data.redis.port", () -> REDIS_CONTAINER.getMappedPort(REDIS_PORT).toString());
+    }
+
     @Autowired
     protected MockMvc mockMvc;
 
     @Autowired
     protected ObjectMapper objectMapper;
-
-    @Container
-    public static PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
-            new PostgreSQLContainer<>("postgres:13.6");
-    @Container
-    private static final RedisContainer REDIS_CONTAINER =
-            new RedisContainer(DockerImageName.parse("redis/redis-stack:latest"));
-
-    @DynamicPropertySource
-    static void postgresqlProperties(DynamicPropertyRegistry registry) {
-        POSTGRESQL_CONTAINER.start();
-        REDIS_CONTAINER.start();
-
-        registry.add("spring.datasource.url", POSTGRESQL_CONTAINER::getJdbcUrl);
-        registry.add("spring.datasource.username", POSTGRESQL_CONTAINER::getUsername);
-        registry.add("spring.datasource.password", POSTGRESQL_CONTAINER::getPassword);
-
-        registry.add("spring.data.redis.port", () -> REDIS_CONTAINER.getMappedPort(6379));
-        registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

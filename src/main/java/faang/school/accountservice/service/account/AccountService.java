@@ -1,10 +1,12 @@
 package faang.school.accountservice.service.account;
 
-import faang.school.accountservice.dto.RequestAccountDto;
-import faang.school.accountservice.dto.ResponseAccountDto;
+import faang.school.accountservice.cache.FreeAccountNumberCache;
+import faang.school.accountservice.dto.account.RequestAccountDto;
+import faang.school.accountservice.dto.account.ResponseAccountDto;
 import faang.school.accountservice.mapper.account.AccountMapper;
 import faang.school.accountservice.model.account.Account;
 import faang.school.accountservice.enums.AccountStatus;
+import faang.school.accountservice.model.account_number.FreeAccountNumber;
 import faang.school.accountservice.repository.AccountRepository;
 import faang.school.accountservice.validator.account.AccountValidator;
 import lombok.RequiredArgsConstructor;
@@ -20,17 +22,20 @@ import java.time.OffsetDateTime;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final FreeAccountNumberCache freeAccountNumberCache;
     private final AccountMapper accountMapper;
     private final AccountValidator validator;
 
     @Transactional
     public ResponseAccountDto createAccount(RequestAccountDto requestAccountDto, long userId) {
-        Account account = accountMapper.toAccount(requestAccountDto);
+        FreeAccountNumber freeAccount = freeAccountNumberCache.getFreeAccount(requestAccountDto.getAccountType(), requestAccountDto.getCurrency());
+        Account account = accountMapper.toEntity(requestAccountDto);
+        account.setNumber(String.valueOf(freeAccount.getId().getAccountNumber()));
         account.setOwnerId(userId);
         account.setStatus(AccountStatus.OPEN);
         accountRepository.save(account);
         log.info("Created account for user {}", userId);
-        return accountMapper.toResponseAccountDto(account);
+        return accountMapper.toDto(account);
     }
 
     @Transactional(readOnly = true)
@@ -38,7 +43,7 @@ public class AccountService {
         Account account = validator.validateAccount(accountId);
         validator.checkAccountToUser(account, userId);
         log.info("Getting an account with id {} user with id {}", accountId, userId);
-        return accountMapper.toResponseAccountDto(account);
+        return accountMapper.toDto(account);
     }
 
     @Transactional(readOnly = true)
@@ -46,7 +51,7 @@ public class AccountService {
         Account account = validator.validateAccount(accountNumber);
         validator.checkAccountToUser(account, userId);
         log.info("Getting an account with id {} user with id {}", account.getId(), userId);
-        return accountMapper.toResponseAccountDto(account);
+        return accountMapper.toDto(account);
     }
 
     @Transactional
@@ -57,7 +62,7 @@ public class AccountService {
         account.setStatus(AccountStatus.FREEZE);
         accountRepository.save(account);
         log.info("Blocking an account with id {} user with id {}", accountId, userId);
-        return accountMapper.toResponseAccountDto(account);
+        return accountMapper.toDto(account);
     }
 
     @Transactional
@@ -68,7 +73,7 @@ public class AccountService {
         account.setStatus(AccountStatus.OPEN);
         accountRepository.save(account);
         log.info("Unblocking an account with id {} user with id {}", accountId, userId);
-        return accountMapper.toResponseAccountDto(account);
+        return accountMapper.toDto(account);
     }
 
     @Transactional
@@ -80,7 +85,7 @@ public class AccountService {
         accountRepository.save(account);
         account.setClosedAt(OffsetDateTime.now());
         log.info("Closing an account with id {} user with id {}", accountId, userId);
-        return accountMapper.toResponseAccountDto(account);
+        return accountMapper.toDto(account);
     }
 
     public Account getAccountEntity(long id) {

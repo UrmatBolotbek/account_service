@@ -14,7 +14,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class AccountValidator {
-
     private final AccountRepository accountRepository;
 
     public Account validateAccount(long accountId) {
