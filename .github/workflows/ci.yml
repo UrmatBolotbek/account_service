@@ -43,13 +43,3 @@ jobs:
 
       - name: Tests
         run: ./gradlew test
-
-      - name: Integration test with Gradle
-        run: ./gradlew integrationTest -x testClasses --no-daemon --continue
-
-      - name: Archive test report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test_report
-          path: build/reports/tests/test

@@ -5,6 +5,4 @@ import org.springframework.data.redis.listener.Topic;
 
 public interface TestEventMessageListener extends MessageListener {
     Topic getTopic();
-
-    String getReceivedMessage();
 }
