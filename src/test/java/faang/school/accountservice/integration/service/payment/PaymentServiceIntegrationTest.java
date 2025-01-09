@@ -41,7 +41,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
-@TestPropertySource(properties = "spring.task.scheduling.enabled=false")
 @Sql(scripts = "/test-sql/insert-default-accounts-and-balances.sql", executionPhase = BEFORE_TEST_METHOD)
 @Sql(scripts = "/test-sql/truncate-balance-account.sql", executionPhase = AFTER_TEST_METHOD)
 public class PaymentServiceIntegrationTest extends BaseContextTest {
