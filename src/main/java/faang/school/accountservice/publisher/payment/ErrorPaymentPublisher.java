@@ -28,14 +28,20 @@ public class ErrorPaymentPublisher extends AbstractPaymentPublisher<ErrorPayment
     }
 
     @Override
-    public void makeResponse(Object... args) {
-        Payment authPayment = (Payment) args[0];
-        setResponse(new ErrorPaymentResponse(authPayment.getId(), SUCCESS));
+    public <I> void makeResponse(I input) {
+        if (input instanceof Payment payment) {
+            setResponse(new ErrorPaymentResponse(payment.getId(), SUCCESS));
+        } else {
+            log.warn("CancelPaymentPublisher.makeResponse: incompatible type {}", input.getClass());
+        }
     }
 
     @Override
-    public void makeErrorResponse(Object... args) {
-        ErrorPaymentRequest errorPaymentRequest = (ErrorPaymentRequest) args[0];
-        setResponse(new ErrorPaymentResponse(errorPaymentRequest.getOperationId(), FAILED));
+    public <R, E extends Exception> void makeErrorResponse(R request, E exception) {
+        if (request instanceof ErrorPaymentRequest errorRequest) {
+            setResponse(new ErrorPaymentResponse(errorRequest.getOperationId(), FAILED));
+        } else {
+            log.warn("ErrorPaymentPublisher.makeErrorResponse: incompatible type {}", request.getClass());
+        }
     }
 }

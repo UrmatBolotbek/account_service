@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -58,6 +59,7 @@ class AbstractPaymentPublisherTest {
         assertThat(testPublisher.getInstance()).isEqualTo(TestEvent.class);
     }
 
+    @Slf4j
     private static class TestPublisher extends AbstractPaymentPublisher<TestEvent> {
         private static final String TOPIC = "topic";
 
@@ -66,13 +68,22 @@ class AbstractPaymentPublisherTest {
         }
 
         @Override
-        public void makeResponse(Object... args) {
-            TestEvent testEvent = (TestEvent) args[0];
-            setResponse(testEvent);
+        public <I> void makeResponse(I input) {
+            if (input instanceof TestEvent testEvent) {
+                setResponse(testEvent);
+            } else {
+                throw new IllegalArgumentException("Expected TestEvent, but got " + input.getClass());
+            }
         }
 
         @Override
-        public void makeErrorResponse(Object... args) {}
+        public <R, E extends Exception> void makeErrorResponse(R request, E exception) {
+            if (request instanceof TestEvent testEvent) {
+                setResponse(new TestEvent("This is a not valid message"));
+            } else {
+                log.warn("TestPublisher.makeErrorResponse: incompatible type {}", request.getClass());
+            }
+        }
 
         @Override
         public String getTopicName() {

@@ -32,20 +32,24 @@ public class AuthPaymentPublisher extends AbstractPaymentPublisher<PaymentRespon
     }
 
     @Override
-    public void makeResponse(Object... args) {
-        Payment payment = (Payment) args[0];
-        setResponse(new PaymentResponse(payment.getId(), SUFFICIENT_FUNDS, SUCCESS));
+    public <I> void makeResponse(I input) {
+        if (input instanceof Payment payment) {
+            setResponse(new PaymentResponse(payment.getId(), SUFFICIENT_FUNDS, SUCCESS));
+        } else {
+            log.warn("AuthPaymentPublisher.makeResponse called with incompatible type: {}", input.getClass());
+        }
     }
 
     @Override
-    public void makeErrorResponse(Object... args) {
-        PaymentRequest paymentRequest = (PaymentRequest) args[0];
-        Exception exception = (Exception) args[1];
-
-        if (exception instanceof InsufficientFundsException) {
-            setResponse(new PaymentResponse(paymentRequest.getOperationId(), INSUFFICIENT_FUNDS, FAILED));
+    public <R, E extends Exception> void makeErrorResponse(R request, E exception) {
+        if (request instanceof PaymentRequest paymentRequest) {
+            if (exception instanceof InsufficientFundsException) {
+                setResponse(new PaymentResponse(paymentRequest.getOperationId(), INSUFFICIENT_FUNDS, FAILED));
+            } else {
+                setResponse(new PaymentResponse(paymentRequest.getOperationId(), BALANCE_NOT_VERIFIED, FAILED));
+            }
         } else {
-            setResponse(new PaymentResponse(paymentRequest.getOperationId(), BALANCE_NOT_VERIFIED, FAILED));
+            log.warn("AuthPaymentPublisher.makeErrorResponse called with incompatible type: {}", request.getClass());
         }
     }
 }

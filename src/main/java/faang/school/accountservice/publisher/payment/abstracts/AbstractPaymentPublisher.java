@@ -30,5 +30,9 @@ public abstract class AbstractPaymentPublisher<T> implements PaymentPublisher<T>
             throw new IllegalStateException("Failed to serialize response", ex);
         }
     }
+
+    public abstract <I> void makeResponse(I input);
+
+    public abstract <R, E extends Exception> void makeErrorResponse(R request, E exception);
 }
 

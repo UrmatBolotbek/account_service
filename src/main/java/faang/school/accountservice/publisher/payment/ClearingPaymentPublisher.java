@@ -28,14 +28,20 @@ public class ClearingPaymentPublisher extends AbstractPaymentPublisher<ClearingP
     }
 
     @Override
-    public void makeResponse(Object... args) {
-        Payment authPayment = (Payment) args[0];
-        setResponse(new ClearingPaymentResponse(authPayment.getId(), SUCCESS));
+    public <I> void makeResponse(I input) {
+        if (input instanceof Payment payment) {
+            setResponse(new ClearingPaymentResponse(payment.getId(), SUCCESS));
+        } else {
+            log.warn("CancelPaymentPublisher.makeResponse: incompatible type {}", input.getClass());
+        }
     }
 
     @Override
-    public void makeErrorResponse(Object... args) {
-        ClearingPaymentRequest clearingPaymentRequest = (ClearingPaymentRequest) args[0];
-        setResponse(new ClearingPaymentResponse(clearingPaymentRequest.getOperationId(), FAILED));
+    public <R, E extends Exception> void makeErrorResponse(R request, E exception) {
+        if (request instanceof ClearingPaymentRequest clearingRequest) {
+            setResponse(new ClearingPaymentResponse(clearingRequest.getOperationId(), FAILED));
+        } else {
+            log.warn("ClearingPaymentPublisher.makeErrorResponse: incompatible type {}", request.getClass());
+        }
     }
 }

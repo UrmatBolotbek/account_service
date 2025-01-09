@@ -3,9 +3,9 @@ package faang.school.accountservice.publisher.payment.abstracts;
 public interface PaymentPublisher<T> {
     Class<T> getInstance();
 
-    void makeResponse(Object... args);
+    <I> void makeResponse(I input);
 
-    void makeErrorResponse(Object... args);
+    <R, E extends Exception> void makeErrorResponse(R request, E exception);
 
     String getTopicName();
 
