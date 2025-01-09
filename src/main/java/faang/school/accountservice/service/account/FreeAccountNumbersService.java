@@ -1,5 +1,6 @@
 package faang.school.accountservice.service.account;
 
+import faang.school.accountservice.cache.FreeAccountNumberCache;
 import faang.school.accountservice.enums.AccountType;
 import faang.school.accountservice.enums.Currency;
 import faang.school.accountservice.model.account_number.AccountNumberSequence;
@@ -23,6 +24,7 @@ public class FreeAccountNumbersService {
 
     private final AccountNumbersSequenceRepository sequenceRepository;
     private final FreeAccountNumbersRepository freeAccountNumbersRepository;
+    private final FreeAccountNumberCache freeAccountNumberCache;
 
     @Transactional
     public void generateAccountNumbers(AccountType type, Currency currency, int batchSize) {
@@ -36,6 +38,8 @@ public class FreeAccountNumbersService {
 
         freeAccountNumbersRepository.saveAll(newNumbers);
         log.info("Generated {} new account numbers for type {} and currency {}", batchSize, type, currency);
+
+        freeAccountNumberCache.updateRedisCache(newNumbers);
     }
 
     @Transactional
@@ -45,7 +49,6 @@ public class FreeAccountNumbersService {
             generateAccountNumbers(type, currency, (int) (requiredCount - existingCount));
         }
     }
-
 
     private FreeAccountNumber createAccountNumber(AccountType type, Currency currency,
                                                   BigInteger initialAccountNumber, long counter) {

@@ -18,13 +18,13 @@ public class AccountNumberScheduler {
     private final FreeAccountNumbersService freeAccountNumbersService;
     private final AccountGenerationConfig config;
 
-    @Scheduled(cron = "${account.generation.cron}")
+    @Scheduled(cron = "${scheduler.account.generation.cron}")
     public void generateAccountNumbers() {
         for (AccountType type : AccountType.values()) {
             for (Currency currency : Currency.values()) {
                 try {
                     int batchSize = config.getRequiredBatchSize(type, currency);
-                    freeAccountNumbersService.generateAccountNumbers(type, currency, batchSize);
+                    freeAccountNumbersService.ensureAccountNumbers(type, currency, batchSize);
                     log.info("Generated {} account numbers for type {} and currency {}",
                             batchSize, type, currency);
                 } catch (Exception e) {
