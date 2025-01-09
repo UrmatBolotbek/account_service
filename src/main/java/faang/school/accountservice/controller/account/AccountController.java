@@ -1,9 +1,10 @@
-package faang.school.accountservice.controller;
+package faang.school.accountservice.controller.account;
 
 import faang.school.accountservice.config.context.UserContext;
-import faang.school.accountservice.dto.RequestAccountDto;
-import faang.school.accountservice.dto.ResponseAccountDto;
-import faang.school.accountservice.service.AccountService;
+import faang.school.accountservice.dto.account.RequestAccountDto;
+import faang.school.accountservice.dto.account.ResponseAccountDto;
+import faang.school.accountservice.service.account.AccountService;
+import faang.school.accountservice.service.account.FreeAccountNumbersService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
