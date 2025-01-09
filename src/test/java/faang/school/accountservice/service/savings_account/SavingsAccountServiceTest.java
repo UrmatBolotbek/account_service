@@ -2,8 +2,6 @@ package faang.school.accountservice.service.savings_account;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.accountservice.calculator.savings_acccount.InterestCalculator;
-import faang.school.accountservice.config.executor.ExecutorServiceConfig;
 import faang.school.accountservice.dto.savings_account.SavingsAccountRequestDto;
 import faang.school.accountservice.dto.savings_account.SavingsAccountResponseDto;
 import faang.school.accountservice.mapper.savings_account_mapper.SavingsAccountMapper;
@@ -52,12 +50,6 @@ class SavingsAccountServiceTest {
 
     @Mock
     private AccountService accountService;
-
-    @Mock
-    private InterestCalculator interestCalculator;
-
-    @Mock
-    private ExecutorServiceConfig executorService;
 
     @Test
     void create_ShouldSaveAndReturnSavingsAccountResponseDto() throws Exception {
