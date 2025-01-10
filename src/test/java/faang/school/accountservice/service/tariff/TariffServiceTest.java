@@ -11,6 +11,7 @@ import faang.school.accountservice.model.tariff.TariffChangeRecord;
 import faang.school.accountservice.repository.TariffRepository;
 import faang.school.accountservice.service.interest_rate.InterestRateService;
 import faang.school.accountservice.validator.tariff.TariffValidator;
+import faang.school.accountservice.validator.user.UserValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,6 +44,9 @@ class TariffServiceTest {
 
     @Mock
     private ObjectMapper objectMapper;
+
+    @Mock
+    private UserValidator userValidator;
 
     @Test
     void create_ShouldSaveAndReturnTariffResponseDto() throws Exception {
@@ -135,11 +139,12 @@ class TariffServiceTest {
     @Test
     void delete_ShouldCallRepositoryToDelete() {
         Long tariffId = 1L;
+        long userId = 2L;
 
         Mockito.doNothing().when(tariffRepository).deleteById(tariffId);
         Mockito.when(tariffValidator.validateTariffExists(tariffId)).thenReturn(new Tariff());
 
-        tariffService.delete(tariffId);
+        tariffService.delete(tariffId, userId);
 
         Mockito.verify(tariffRepository).deleteById(tariffId);
     }

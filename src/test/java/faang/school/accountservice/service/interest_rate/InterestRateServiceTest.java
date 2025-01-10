@@ -8,6 +8,7 @@ import faang.school.accountservice.model.interest_rate.InterestRate;
 import faang.school.accountservice.model.interest_rate.InterestRateChangeRecord;
 import faang.school.accountservice.repository.InterestRateRepository;
 import faang.school.accountservice.validator.interest_rate.InterestRateValidator;
+import faang.school.accountservice.validator.user.UserValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,6 +39,9 @@ class InterestRateServiceTest {
 
     @Mock
     private ObjectMapper objectMapper;
+
+    @Mock
+    private UserValidator userValidator;
 
     @Test
     void create_ShouldSaveAndReturnInterestRateDto() throws Exception {
@@ -132,11 +136,12 @@ class InterestRateServiceTest {
     @Test
     void delete_ShouldCallRepositoryToDelete() {
         Long interestRateId = 1L;
+        long userId = 2L;
 
         Mockito.doNothing().when(interestRateRepository).deleteById(interestRateId);
         Mockito.when(interestRateValidator.validateInterestRateExists(interestRateId)).thenReturn(new InterestRate());
 
-        interestRateService.delete(interestRateId);
+        interestRateService.delete(interestRateId, userId);
 
         Mockito.verify(interestRateRepository).deleteById(interestRateId);
     }

@@ -12,6 +12,7 @@ import faang.school.accountservice.model.tariff.TariffChangeRecord;
 import faang.school.accountservice.repository.TariffRepository;
 import faang.school.accountservice.service.interest_rate.InterestRateService;
 import faang.school.accountservice.validator.tariff.TariffValidator;
+import faang.school.accountservice.validator.user.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,11 +30,13 @@ public class TariffService {
     private final TariffRepository tariffRepository;
     private final TariffMapper tariffMapper;
     private final TariffValidator tariffValidator;
+    private final UserValidator userValidator;
     private final ObjectMapper objectMapper;
     private static final String CREATING_NEW_TARIFF_ACTION = "CREATE";
     private static final String UPDATING_TARIFF_ACTION = "UPDATE";
 
     public TariffResponseDto create(TariffRequestDto tariffRequestDto, long userId) {
+        userValidator.validateUserExists(userId);
         Tariff tariff = tariffMapper.toEntity(tariffRequestDto);
 
         List<TariffChangeRecord> history = new ArrayList<>();
@@ -49,6 +52,7 @@ public class TariffService {
     }
 
     public TariffResponseDto update(Long tariffId, TariffRequestDto tariffRequestDto, long userId) {
+        userValidator.validateUserExists(userId);
         Tariff tariff = tariffValidator.validateTariffExists(tariffId);
 
         Long oldInterestRateId = tariff.getInterestRate().getId();
@@ -85,8 +89,9 @@ public class TariffService {
         return tariff;
     }
 
-    public void delete(Long tariffId) {
+    public void delete(Long tariffId, long userId) {
         tariffValidator.validateTariffExists(tariffId);
+        userValidator.validateUserExists(userId);
         log.info("Deleting Tariff: {}", tariffId);
         tariffRepository.deleteById(tariffId);
     }

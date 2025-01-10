@@ -7,7 +7,6 @@ import faang.school.accountservice.dto.savings_account.SavingsAccountResponseDto
 import faang.school.accountservice.dto.tariff.TariffResponseDto;
 import faang.school.accountservice.model.tariff.TariffType;
 import faang.school.accountservice.service.savings_account.SavingsAccountService;
-import faang.school.accountservice.validator.user.UserValidator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +30,6 @@ class SavingsAccountControllerTest {
 
     @MockBean
     private SavingsAccountService savingsAccountService;
-
-    @MockBean
-    private UserValidator userValidator;
 
     @MockBean
     private UserContext userContext;
@@ -60,7 +56,7 @@ class SavingsAccountControllerTest {
                 .build();
 
         Mockito.when(userContext.getUserId()).thenReturn(1L);
-        Mockito.when(savingsAccountService.create(Mockito.any(SavingsAccountRequestDto.class))).thenReturn(responseDto);
+        Mockito.when(savingsAccountService.create(Mockito.any(SavingsAccountRequestDto.class), Mockito.eq(1L))).thenReturn(responseDto);
 
         mockMvc.perform(post("/api/v1/savings_accounts")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -71,8 +67,7 @@ class SavingsAccountControllerTest {
                 .andExpect(jsonPath("$.tariffAndInterestRate.id").value(2))
                 .andExpect(jsonPath("$.tariffAndInterestRate.tariffType").value("GENERAL"));
 
-        Mockito.verify(userValidator).validateUserExists(1L);
-        Mockito.verify(savingsAccountService).create(Mockito.any(SavingsAccountRequestDto.class));
+        Mockito.verify(savingsAccountService).create(Mockito.any(SavingsAccountRequestDto.class), Mockito.eq(1L));
     }
 
     @Test

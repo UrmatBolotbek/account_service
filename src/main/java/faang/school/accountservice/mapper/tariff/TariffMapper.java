@@ -13,8 +13,10 @@ import java.util.List;
 public interface TariffMapper {
     @Mapping(target = "currentInterestRate", source = "interestRate.interestRate")
     TariffResponseDto toDto(Tariff tariff);
+
     @Mapping(target = "currentInterestRate", source = "interestRate.interestRate")
     List<TariffResponseDto> toDtos(List<Tariff> tariffs);
+
     @Mapping(target = "interestRate", ignore = true)
     Tariff toEntity(TariffRequestDto tariffRequestDto);
 }

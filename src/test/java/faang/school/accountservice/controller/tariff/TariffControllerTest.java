@@ -8,7 +8,6 @@ import faang.school.accountservice.model.interest_rate.InterestRate;
 import faang.school.accountservice.model.tariff.TariffChangeRecord;
 import faang.school.accountservice.model.tariff.TariffType;
 import faang.school.accountservice.service.tariff.TariffService;
-import faang.school.accountservice.validator.user.UserValidator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +34,6 @@ class TariffControllerTest {
 
     @MockBean
     private TariffService tariffService;
-
-    @MockBean
-    private UserValidator userValidator;
 
     @MockBean
     private UserContext userContext;
@@ -73,7 +69,6 @@ class TariffControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.tariffType").value("GENERAL"));
 
-        Mockito.verify(userValidator).validateUserExists(1L);
         Mockito.verify(tariffService).create(Mockito.any(TariffRequestDto.class), Mockito.eq(1L));
     }
 
@@ -104,7 +99,6 @@ class TariffControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.tariffType").value("PROMO"));
 
-        Mockito.verify(userValidator).validateUserExists(1L);
         Mockito.verify(tariffService).update(Mockito.eq(1L), Mockito.any(TariffRequestDto.class), Mockito.eq(1L));
     }
 
@@ -152,8 +146,7 @@ class TariffControllerTest {
                         .header(USER_HEADER, "1"))
                 .andExpect(status().isNoContent());
 
-        Mockito.verify(userValidator).validateUserExists(1L);
-        Mockito.verify(tariffService).delete(1L);
+        Mockito.verify(tariffService).delete(1L, 1L);
     }
 
     @Test

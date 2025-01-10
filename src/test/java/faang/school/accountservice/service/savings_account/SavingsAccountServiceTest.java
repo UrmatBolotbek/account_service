@@ -13,6 +13,7 @@ import faang.school.accountservice.repository.SavingsAccountRepository;
 import faang.school.accountservice.service.account.AccountService;
 import faang.school.accountservice.service.tariff.TariffService;
 import faang.school.accountservice.validator.savings_account.SavingsAccountValidator;
+import faang.school.accountservice.validator.user.UserValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -51,6 +52,9 @@ class SavingsAccountServiceTest {
     @Mock
     private AccountService accountService;
 
+    @Mock
+    private UserValidator userValidator;
+
     @Test
     void create_ShouldSaveAndReturnSavingsAccountResponseDto() throws Exception {
         SavingsAccountRequestDto requestDto = new SavingsAccountRequestDto();
@@ -79,7 +83,7 @@ class SavingsAccountServiceTest {
         Mockito.when(savingsAccountRepository.save(savingsAccount)).thenReturn(savedSavingsAccount);
         Mockito.when(savingsAccountMapper.toDto(savedSavingsAccount)).thenReturn(responseDto);
 
-        SavingsAccountResponseDto result = savingsAccountService.create(requestDto);
+        SavingsAccountResponseDto result = savingsAccountService.create(requestDto, 1L);
 
         assertNotNull(result);
         assertEquals(1L, result.getSavingsAccountId());

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.accountservice.calculator.savings_acccount.InterestCalculator;
-import faang.school.accountservice.config.executor.ExecutorServiceConfig;
 import faang.school.accountservice.dto.savings_account.SavingsAccountRequestDto;
 import faang.school.accountservice.dto.savings_account.SavingsAccountResponseDto;
 import faang.school.accountservice.mapper.savings_account_mapper.SavingsAccountMapper;
@@ -15,6 +14,7 @@ import faang.school.accountservice.repository.SavingsAccountRepository;
 import faang.school.accountservice.service.account.AccountService;
 import faang.school.accountservice.service.tariff.TariffService;
 import faang.school.accountservice.validator.savings_account.SavingsAccountValidator;
+import faang.school.accountservice.validator.user.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 
 @Service
@@ -39,10 +38,11 @@ public class SavingsAccountService {
     private final TariffService tariffService;
     private final AccountService accountService;
     private final InterestCalculator interestCalculator;
-    private final ExecutorServiceConfig executorService;
+    private final UserValidator userValidator;
 
     @Transactional
-    public SavingsAccountResponseDto create(SavingsAccountRequestDto savingsAccountRequestDto) {
+    public SavingsAccountResponseDto create(SavingsAccountRequestDto savingsAccountRequestDto, long userId) {
+        userValidator.validateUserExists(userId);
         SavingsAccount savingsAccount = savingsAccountMapper.toEntity(savingsAccountRequestDto);
 
         Account account = accountService.getAccountEntity(savingsAccountRequestDto.getAccountId());
@@ -78,10 +78,8 @@ public class SavingsAccountService {
         List<SavingsAccount> existingSavingsAccounts =
                 savingsAccountRepository.findByLastInterestDateIsNullOrLastInterestDateLessThan(OffsetDateTime.now());
 
-        CompletableFuture<Void> calculatedSavingsAccount = CompletableFuture.runAsync(
-                () -> interestCalculator.calculate(existingSavingsAccounts), executorService.executor());
-
-        calculatedSavingsAccount.thenAccept(result -> savingsAccountRepository.saveAll(existingSavingsAccounts));
+        interestCalculator.calculate(existingSavingsAccounts);
+        savingsAccountRepository.saveAll(existingSavingsAccounts);
         log.info("finish calculatePercents, thread name: {}", Thread.currentThread().getName());
     }
 

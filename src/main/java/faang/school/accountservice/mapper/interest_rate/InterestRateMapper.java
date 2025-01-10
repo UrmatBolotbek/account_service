@@ -10,6 +10,8 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface InterestRateMapper {
     InterestRateDto toDto(InterestRate interestRate);
+
     List<InterestRateDto> toListDto(List<InterestRate> interestRates);
+
     InterestRate toEntity(InterestRateDto interestRateDto);
 }

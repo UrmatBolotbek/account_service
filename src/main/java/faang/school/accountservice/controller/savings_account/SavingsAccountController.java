@@ -4,7 +4,6 @@ import faang.school.accountservice.config.context.UserContext;
 import faang.school.accountservice.dto.savings_account.SavingsAccountRequestDto;
 import faang.school.accountservice.dto.savings_account.SavingsAccountResponseDto;
 import faang.school.accountservice.service.savings_account.SavingsAccountService;
-import faang.school.accountservice.validator.user.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,17 +27,15 @@ import java.util.List;
 public class SavingsAccountController {
 
     private final SavingsAccountService savingsAccountService;
-    private final UserValidator userValidator;
     private final UserContext userContext;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public SavingsAccountResponseDto create(@Valid @RequestBody SavingsAccountRequestDto savingsAccountRequestDto) {
         long userId = userContext.getUserId();
-        userValidator.validateUserExists(userId);
         log.info("Received request to create savings account {} by user {}",
                 savingsAccountRequestDto, userId);
-        return savingsAccountService.create(savingsAccountRequestDto);
+        return savingsAccountService.create(savingsAccountRequestDto, userId);
     }
 
     @GetMapping("/{accountId}")

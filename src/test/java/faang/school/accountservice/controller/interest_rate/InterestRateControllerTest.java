@@ -6,7 +6,6 @@ import faang.school.accountservice.dto.interest_rate.InterestRateDto;
 import faang.school.accountservice.model.interest_rate.InterestRateChangeRecord;
 import faang.school.accountservice.service.interest_rate.InterestRateService;
 import faang.school.accountservice.validator.interest_rate.InterestRateValidator;
-import faang.school.accountservice.validator.user.UserValidator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +29,6 @@ class InterestRateControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private UserValidator userValidator;
 
     @MockBean
     private InterestRateValidator interestRateValidator;
@@ -68,7 +64,6 @@ class InterestRateControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.interestRate").value(5.0));
 
-        Mockito.verify(userValidator).validateUserExists(1L);
         Mockito.verify(interestRateValidator).validateInterestRateDoesNotExceedMax(requestDto);
     }
 
@@ -93,7 +88,6 @@ class InterestRateControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.interestRate").value(6.0));
 
-        Mockito.verify(userValidator).validateUserExists(1L);
         Mockito.verify(interestRateValidator).validateInterestRateDoesNotExceedMax(requestDto);
     }
 
@@ -142,8 +136,7 @@ class InterestRateControllerTest {
                         .header(USER_HEADER, "1"))
                 .andExpect(status().isNoContent());
 
-        Mockito.verify(userValidator).validateUserExists(1L);
-        Mockito.verify(interestRateService).delete(1L);
+        Mockito.verify(interestRateService).delete(1L, 1L);
     }
 
     @Test

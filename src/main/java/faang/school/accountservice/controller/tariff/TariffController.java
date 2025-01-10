@@ -6,7 +6,6 @@ import faang.school.accountservice.dto.tariff.TariffRequestDto;
 import faang.school.accountservice.dto.tariff.TariffResponseDto;
 import faang.school.accountservice.model.tariff.TariffChangeRecord;
 import faang.school.accountservice.service.tariff.TariffService;
-import faang.school.accountservice.validator.user.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,14 +31,12 @@ import java.util.List;
 public class TariffController {
 
     private final TariffService tariffService;
-    private final UserValidator userValidator;
     private final UserContext userContext;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TariffResponseDto create(@Valid @RequestBody TariffRequestDto tariffRequestDto) {
         long userId = userContext.getUserId();
-        userValidator.validateUserExists(userContext.getUserId());
         log.info("Received request to create a new tariff of type {} by user with id: {}",
                 tariffRequestDto.getTariffType(), userId);
         return tariffService.create(tariffRequestDto, userId);
@@ -49,7 +46,6 @@ public class TariffController {
     public TariffResponseDto update(@PathVariable("tariffId") Long tariffId,
                                     @Valid @RequestBody TariffRequestDto tariffRequestDto) {
         long userId = userContext.getUserId();
-        userValidator.validateUserExists(userId);
         log.info("Received a request to update a tariff with id {} by user with id {}",
                 tariffId, userId);
         return tariffService.update(tariffId, tariffRequestDto, userId);
@@ -71,10 +67,9 @@ public class TariffController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("tariffId") Long tariffId) {
         long userId = userContext.getUserId();
-        userValidator.validateUserExists(userId);
         log.info("Received a request to delete a tariff with id {} by user with id {}",
                 tariffId, userId);
-        tariffService.delete(tariffId);
+        tariffService.delete(tariffId, userId);
     }
 
     @GetMapping("/{tariffId}/history")

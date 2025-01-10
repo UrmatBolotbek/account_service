@@ -9,6 +9,7 @@ import faang.school.accountservice.model.interest_rate.InterestRate;
 import faang.school.accountservice.model.interest_rate.InterestRateChangeRecord;
 import faang.school.accountservice.repository.InterestRateRepository;
 import faang.school.accountservice.validator.interest_rate.InterestRateValidator;
+import faang.school.accountservice.validator.user.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,14 @@ public class InterestRateService {
 
     private final InterestRateRepository interestRateRepository;
     private final InterestRateValidator interestRateValidator;
+    private final UserValidator userValidator;
     private final InterestRateMapper interestRateMapper;
     private final ObjectMapper objectMapper;
     private static final String CREATING_NEW_INTEREST_RATE_ACTION = "CREATE";
     private static final String UPDATING_INTEREST_RATE_ACTION = "UPDATE";
 
     public InterestRateDto create(InterestRateDto requestDto, long userId) {
+        userValidator.validateUserExists(userId);
         requestDto.setId(null);
         InterestRate interestRate = interestRateMapper.toEntity(requestDto);
 
@@ -47,6 +50,7 @@ public class InterestRateService {
     }
 
     public InterestRateDto update(Long interestRateId, InterestRateDto requestDto, long userId) {
+        userValidator.validateUserExists(userId);
         InterestRate interestRate = interestRateValidator.validateInterestRateExists(interestRateId);
 
         BigDecimal oldValue = interestRate.getInterestRate();
@@ -82,7 +86,8 @@ public class InterestRateService {
         return interestRate;
     }
 
-    public void delete(Long interestRateId) {
+    public void delete(Long interestRateId, long userId) {
+        userValidator.validateUserExists(userId);
         interestRateValidator.validateInterestRateExists(interestRateId);
         log.info("Deleting interest rate {}", interestRateId);
         interestRateRepository.deleteById(interestRateId);

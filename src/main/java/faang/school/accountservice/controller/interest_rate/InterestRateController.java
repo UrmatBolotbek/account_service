@@ -6,7 +6,6 @@ import faang.school.accountservice.dto.interest_rate.InterestRateDto;
 import faang.school.accountservice.model.interest_rate.InterestRateChangeRecord;
 import faang.school.accountservice.service.interest_rate.InterestRateService;
 import faang.school.accountservice.validator.interest_rate.InterestRateValidator;
-import faang.school.accountservice.validator.user.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +30,6 @@ import java.util.List;
 @RequestMapping("api/v1/interest_rates")
 public class InterestRateController {
 
-    private final UserValidator userValidator;
     private final InterestRateValidator interestRateValidator;
     private final InterestRateService interestRateService;
     private final UserContext userContext;
@@ -40,7 +38,6 @@ public class InterestRateController {
     @ResponseStatus(HttpStatus.CREATED)
     public InterestRateDto create(@Valid @RequestBody InterestRateDto interestRateDto) {
         long userId = userContext.getUserId();
-        userValidator.validateUserExists(userId);
         interestRateValidator.validateInterestRateDoesNotExceedMax(interestRateDto);
         log.info("Received request to create a new interest rate {} by user with id {}",
                 interestRateDto.getInterestRate(), userId);
@@ -51,7 +48,6 @@ public class InterestRateController {
     public InterestRateDto update(@PathVariable("interestRateId") Long interestRateId,
                                   @Valid @RequestBody InterestRateDto interestRateDto) {
         long userId = userContext.getUserId();
-        userValidator.validateUserExists(userId);
         interestRateValidator.validateInterestRateDoesNotExceedMax(interestRateDto);
         log.info("Received a request to update an interestRate with id {} to {} by user with id {}",
                 interestRateId, interestRateDto.getInterestRate(), userId);
@@ -74,10 +70,9 @@ public class InterestRateController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("interestRateId") Long interestRateId) {
         long userId = userContext.getUserId();
-        userValidator.validateUserExists(userId);
         log.info("Received a request to delete an interestRate with id {} by user with id {} ",
                 interestRateId, userId);
-        interestRateService.delete(interestRateId);
+        interestRateService.delete(interestRateId, userId);
     }
 
     @GetMapping("/{interestRateId}/history")
