@@ -38,7 +38,7 @@ spring:
 scheduler:
   account:
     generation:
-      cron: 0 0 * * *
+      cron: 0 0 * * * *
       required-batch:
         FL_RUB: 500
         FL_USD: 200
