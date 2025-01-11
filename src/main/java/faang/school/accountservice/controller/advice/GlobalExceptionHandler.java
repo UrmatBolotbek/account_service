@@ -1,8 +1,8 @@
 package faang.school.accountservice.controller.advice;
 
-import faang.school.accountservice.exception.AccountNotFoundException;
-import faang.school.accountservice.exception.payment.PaymentHasBeenUpdatedException;
+import faang.school.accountservice.exception.account.AccountNotFoundException;
 import faang.school.accountservice.exception.balance.BalanceHasBeenUpdatedException;
+import faang.school.accountservice.exception.payment.PaymentHasBeenUpdatedException;
 import jakarta.persistence.OptimisticLockException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

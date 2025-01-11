@@ -11,7 +11,8 @@ import faang.school.accountservice.model.account.Account;
 import faang.school.accountservice.model.account_number.FreeAccountId;
 import faang.school.accountservice.model.account_number.FreeAccountNumber;
 import faang.school.accountservice.repository.AccountRepository;
-import faang.school.accountservice.validator.AccountValidator;
+import faang.school.accountservice.service.account.AccountService;
+import faang.school.accountservice.validator.account.AccountValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -116,6 +117,4 @@ public class AccountServiceTest {
         verify(accountRepository).save(accountCaptor.capture());
         assertEquals(AccountStatus.CLOSE, accountCaptor.getValue().getStatus());
     }
-
-
 }

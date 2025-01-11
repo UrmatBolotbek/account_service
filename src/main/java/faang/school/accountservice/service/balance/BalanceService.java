@@ -1,7 +1,7 @@
 package faang.school.accountservice.service.balance;
 
 import faang.school.accountservice.dto.balance.ResponseBalanceDto;
-import faang.school.accountservice.exception.AccountNotFoundException;
+import faang.school.accountservice.exception.account.AccountNotFoundException;
 import faang.school.accountservice.exception.balance.BalanceHasBeenUpdatedException;
 import faang.school.accountservice.mapper.balance.BalanceMapper;
 import faang.school.accountservice.model.account.Account;
@@ -46,8 +46,7 @@ public class BalanceService {
         try {
             return balanceRepository.saveAndFlush(balance);
         } catch (OptimisticLockingFailureException exception) {
-            throw new BalanceHasBeenUpdatedException("Balance with id=%s has been updated. Reload information."
-                    .formatted(balance.getId()));
+            throw new BalanceHasBeenUpdatedException(balance.getId());
         }
     }
 }

@@ -9,7 +9,7 @@ import faang.school.accountservice.dto.payment.response.CancelPaymentResponse;
 import faang.school.accountservice.dto.payment.response.ClearingPaymentResponse;
 import faang.school.accountservice.dto.payment.response.ErrorPaymentResponse;
 import faang.school.accountservice.dto.payment.response.PaymentResponse;
-import faang.school.accountservice.exception.AccountNotFoundException;
+import faang.school.accountservice.exception.account.AccountNotFoundException;
 import faang.school.accountservice.exception.balance.BalanceHasBeenUpdatedException;
 import faang.school.accountservice.exception.payment.PaymentHasBeenUpdatedException;
 import faang.school.accountservice.model.balance.Balance;
@@ -143,8 +143,7 @@ public class PaymentService {
         try {
             balanceRepository.saveAndFlush(balance);
         } catch (OptimisticLockingFailureException ex) {
-            throw new BalanceHasBeenUpdatedException("Balance with id=%s has been updated. Reload information."
-                    .formatted(balance.getId()));
+            throw new BalanceHasBeenUpdatedException(balance.getId());
         }
     }
 

@@ -8,7 +8,7 @@ import faang.school.accountservice.model.account.Account;
 import faang.school.accountservice.enums.AccountStatus;
 import faang.school.accountservice.model.account_number.FreeAccountNumber;
 import faang.school.accountservice.repository.AccountRepository;
-import faang.school.accountservice.validator.AccountValidator;
+import faang.school.accountservice.validator.account.AccountValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -88,4 +88,9 @@ public class AccountService {
         return accountMapper.toDto(account);
     }
 
+    public Account getAccountEntity(long id) {
+        Account account = validator.validateAccountExists(id);
+        log.info("getAccountEntity by id: {}: ", id);
+        return account;
+    }
 }

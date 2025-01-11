@@ -1,7 +1,7 @@
 package faang.school.accountservice.service.balance;
 
 import faang.school.accountservice.dto.balance.ResponseBalanceDto;
-import faang.school.accountservice.exception.AccountNotFoundException;
+import faang.school.accountservice.exception.account.AccountNotFoundException;
 import faang.school.accountservice.exception.balance.BalanceHasBeenUpdatedException;
 import faang.school.accountservice.mapper.balance.BalanceMapper;
 import faang.school.accountservice.model.account.Account;
@@ -19,8 +19,14 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class BalanceServiceTest {
