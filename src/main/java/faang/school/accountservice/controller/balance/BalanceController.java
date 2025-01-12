@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping("/api/v1/account/{accountId}/balance/")
+@RequestMapping("/api/v1/account/{accountId}/balance")
 @RequiredArgsConstructor
 public class BalanceController {
 

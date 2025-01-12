@@ -16,18 +16,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 
-import org.springframework.http.MediaType;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class BalanceControllerTest {
@@ -65,7 +58,7 @@ public class BalanceControllerTest {
     public void getBalanceByAccountId_Success() throws Exception {
         when(balanceService.getBalance(VALID_ACCOUNT_ID)).thenReturn(validResponseBalanceDto);
 
-        mockMvc.perform(get("/api/v1/account/{accountId}/balance/", VALID_ACCOUNT_ID))
+        mockMvc.perform(get("/api/v1/account/{accountId}/balance", VALID_ACCOUNT_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(BALANCE_ID))
                 .andExpect(jsonPath("$.authorizationBalance").value(AUTH_BALANCE_INITIAL.doubleValue()))
@@ -80,16 +73,14 @@ public class BalanceControllerTest {
         when(balanceService.getBalance(INVALID_ACCOUNT_ID))
                 .thenThrow(new AccountNotFoundException("Account not found"));
 
-        mockMvc.perform(get("/api/v1/account/{accountId}/balance/", INVALID_ACCOUNT_ID))
+        mockMvc.perform(get("/api/v1/account/{accountId}/balance", INVALID_ACCOUNT_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.type").value("about:blank"))
                 .andExpect(jsonPath("$.title").value("Not Found"))
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.detail").value("Account not found"))
-                .andExpect(jsonPath("$.instance").value("/api/v1/account/2/balance/"));
+                .andExpect(jsonPath("$.instance").value("/api/v1/account/2/balance"));
 
         verify(balanceService).getBalance(INVALID_ACCOUNT_ID);
     }
 }
-
-
